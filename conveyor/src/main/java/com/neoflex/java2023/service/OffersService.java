@@ -14,7 +14,6 @@ public class OffersService {
 
     private final ScoringService scoringService;
     public List<LoanOfferDTO> getPreparedOffers(LoanApplicationRequestDTO dto) {
-        ScoringValidator.validateLoanApplicationRequestDTO(dto);
         return List.of(
                 createOffer(false, false, dto),
                 createOffer(true, false, dto),
