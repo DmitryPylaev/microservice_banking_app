@@ -8,7 +8,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
 import java.math.BigDecimal;
-import java.math.MathContext;
 
 @SpringBootTest(classes = {ScoringService.class})
 @ComponentScan("com.neoflex.java2023")
@@ -22,13 +21,15 @@ class ScoringServiceTest {
         this.service = service;
     }
 
-
     @Test
     void evaluateTotalAmountServices() {
-        BigDecimal amount = BigDecimal.valueOf(100);
+        BigDecimal amount = BigDecimal.valueOf(300000);
 
-        Assertions.assertEquals(amount, service.evaluateTotalAmountServices(amount, true));
-        Assertions.assertEquals(amount.divide(BigDecimal.valueOf(2), new MathContext(7)), service.evaluateTotalAmountServices(amount, false));
+        BigDecimal totalWitInsurance = service.evaluateTotalAmount(amount, BigDecimal.valueOf(18714.44), 18, false);
+        BigDecimal totalWithoutInsurance = service.evaluateTotalAmount(amount, BigDecimal.valueOf(18714.44), 18, true);
+
+        Assertions.assertTrue(BigDecimal.valueOf(637252).doubleValue() - totalWitInsurance.doubleValue() < 500.0);
+        Assertions.assertTrue(BigDecimal.valueOf(537252).doubleValue() - totalWithoutInsurance.doubleValue() < 500.0);
     }
 
     @Test

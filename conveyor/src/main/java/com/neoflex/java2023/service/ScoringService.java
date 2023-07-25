@@ -15,8 +15,10 @@ public class ScoringService {
         this.baseRate = baseRate;
     }
 
-    public BigDecimal evaluateTotalAmountServices(BigDecimal amount, Boolean isInsuranceEnabled) {
-        return (isInsuranceEnabled)?amount:BigDecimal.valueOf(amount.intValue()/2);
+    public BigDecimal evaluateTotalAmount(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
+        BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
+        amount = amount.add(overpayment);
+        return (isInsuranceEnabled)?amount.add(BigDecimal.valueOf(100000)):amount;
     }
 
     public BigDecimal calculateRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
