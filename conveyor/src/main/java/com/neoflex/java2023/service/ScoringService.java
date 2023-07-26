@@ -1,10 +1,15 @@
 package com.neoflex.java2023.service;
 
+import com.neoflex.java2023.dto.PaymentScheduleElement;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
+import java.time.LocalDate;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 public class ScoringService {
@@ -41,5 +46,24 @@ public class ScoringService {
                 .subtract(BigDecimal.ONE)
                 .divide(termYear, new MathContext(7))
                 .multiply(BigDecimal.valueOf(100));
+    }
+
+    public List<PaymentScheduleElement> paymentScheduleBuild(BigDecimal amount, Integer term, BigDecimal rate, BigDecimal monthlyPayment) {
+        List<PaymentScheduleElement> paymentSchedule = new ArrayList<>();
+        for (int i = 0; i < term; i++) {
+            BigDecimal interestPayment = rate.divide(BigDecimal.valueOf(12 * 100), new MathContext(6)).multiply(amount, new MathContext(6));
+            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment, new MathContext(6));
+            amount = amount.subtract(debtPayment);
+
+            paymentSchedule.add(PaymentScheduleElement.builder()
+                    .number(i+1)
+                    .date(LocalDate.now().plus(i + 1, ChronoUnit.MONTHS))
+                    .totalPayment(monthlyPayment)
+                    .interestPayment(interestPayment)
+                    .debtPayment(debtPayment)
+                    .remainingDebt(amount)
+                    .build());
+        }
+        return paymentSchedule;
     }
 }
