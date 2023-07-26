@@ -29,8 +29,8 @@ public class OffersService {
                                      LoanApplicationRequestDTO dto) {
 
         BigDecimal rate = scoringService.calculateRate(isInsuranceEnabled, isSalaryClient);
+        BigDecimal totalAmount = scoringService.evaluateTotalAmount(dto.getAmount(), isInsuranceEnabled);
         BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(dto.getAmount(), dto.getTerm(), rate);
-        BigDecimal totalAmount = scoringService.evaluateTotalAmount(dto.getAmount(), monthlyPayment, dto.getTerm(), isInsuranceEnabled);
 
         return LoanOfferDTO.builder()
                 .requestedAmount(dto.getAmount())

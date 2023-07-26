@@ -15,10 +15,8 @@ public class ScoringService {
         this.baseRate = baseRate;
     }
 
-    public BigDecimal evaluateTotalAmount(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
-        BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
-        amount = amount.add(overpayment);
-        return (isInsuranceEnabled)?amount.add(BigDecimal.valueOf(100000)):amount;
+    public BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
+        return (isInsuranceEnabled)?amount.subtract(BigDecimal.valueOf(100)):amount;
     }
 
     public BigDecimal calculateRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
@@ -33,5 +31,15 @@ public class ScoringService {
         BigDecimal percent = monthRate.add(BigDecimal.ONE).pow(term);
         BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), new MathContext(7)));
         return amount.multiply(annuityCoefficient, new MathContext(7));
+    }
+
+    public BigDecimal calcPsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
+        BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
+        overpayment = (isInsuranceEnabled)?overpayment.add(BigDecimal.valueOf(100000)):overpayment;
+        BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(12), new MathContext(7));
+        return overpayment.divide(amount, new MathContext(7))
+                .subtract(BigDecimal.ONE)
+                .divide(termYear, new MathContext(7))
+                .multiply(BigDecimal.valueOf(100));
     }
 }
