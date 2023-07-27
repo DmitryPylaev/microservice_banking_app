@@ -17,10 +17,14 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/**
+ * Контроллер кредитного конвейра
+ */
 @RestController
 @RequestMapping("/conveyor")
 @AllArgsConstructor
 @Log4j2
+@SuppressWarnings("unused")
 @Tag(name = "ConveyorController", description = "Контроллер кредитного конвейра")
 public class ConveyorController {
     private OffersService offersService;
