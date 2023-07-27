@@ -2,6 +2,7 @@ package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
 import lombok.AllArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -11,10 +12,13 @@ import java.util.stream.Stream;
 
 @Service
 @AllArgsConstructor
+@Log4j2
 public class OffersService {
 
     private final ScoringService scoringService;
+
     public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO dto) {
+        log.info("В методе сервиса подготовки предложений OffersService::getPrescoringOffers");
         return Stream.of(
                 createPrescoringOffer(true, true, dto),
                 createPrescoringOffer(true, false, dto),
@@ -27,6 +31,7 @@ public class OffersService {
                                                Boolean isSalaryClient,
                                                LoanApplicationRequestDTO dto) {
 
+        log.info("В методе сервиса подготовки предложений OffersService::createPrescoringOffer");
         BigDecimal rate = scoringService.calculatePrescoringRate(isInsuranceEnabled, isSalaryClient);
         BigDecimal totalAmount = scoringService.evaluateTotalAmount(dto.getAmount(), isInsuranceEnabled);
         BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(dto.getAmount(), dto.getTerm(), rate);
@@ -43,6 +48,7 @@ public class OffersService {
     }
 
     public CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO) {
+        log.info("В методе сервиса подготовки предложений OffersService::createCreditOffer");
         BigDecimal amount = scoringDataDTO.getAmount();
         Integer term = scoringDataDTO.getTerm();
         Boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();

@@ -5,9 +5,10 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "Предложение по кредиту после прескоринга")
 public class LoanOfferDTO {
     private Long applicationId;
     private BigDecimal requestedAmount;

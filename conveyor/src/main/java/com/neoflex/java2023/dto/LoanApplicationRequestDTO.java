@@ -8,7 +8,7 @@ import java.math.BigDecimal;
 import java.time.LocalDate;
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "Первичный запрос на кредит")
 public class LoanApplicationRequestDTO {
     private BigDecimal amount;
     private Integer term;

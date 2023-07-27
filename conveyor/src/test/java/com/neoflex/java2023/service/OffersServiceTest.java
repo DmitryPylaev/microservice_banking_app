@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {OffersService.class, ScoringService.class})
+@SpringBootTest(classes = {OffersService.class})
 @ComponentScan("com.neoflex.java2023")
 class OffersServiceTest {
 
@@ -30,6 +30,7 @@ class OffersServiceTest {
 
     @Autowired
     private OffersService offersService;
+
     @Test
     void getPreparedOffers() {
         BigDecimal amount = BigDecimal.valueOf(300000);
@@ -61,7 +62,7 @@ class OffersServiceTest {
         verify(scoringService, Mockito.times(4)).evaluateTotalAmount(any(), any());
         verify(scoringService, Mockito.times(4)).calculatePrescoringRate(any(), any());
 
-        Assertions.assertDoesNotThrow(() ->offersService.getPrescoringOffers(dto));
+        Assertions.assertDoesNotThrow(() -> offersService.getPrescoringOffers(dto));
 
         assertEquals(amountWithInsurance, result.get(0).getTotalAmount());
         assertEquals(amountWithInsurance, result.get(1).getTotalAmount());
@@ -71,7 +72,7 @@ class OffersServiceTest {
     }
 
     @Test
-    void createCreditOffer(){
+    void createCreditOffer() {
         BigDecimal amount = BigDecimal.valueOf(20000);
         Integer term = 36;
         BigDecimal monthlyPayment = BigDecimal.valueOf(24970);

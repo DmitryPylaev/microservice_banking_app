@@ -7,14 +7,15 @@ import lombok.Builder;
 import lombok.Data;
 
 import java.math.BigDecimal;
+
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "Карточка работника")
 public class EmploymentDTO {
-  private EmploymentStatus employmentStatus;
-  private String employerINN;
-  private BigDecimal salary;
-  private Position position;
-  private Integer workExperienceTotal;
-  private Integer workExperienceCurrent;
+    private EmploymentStatus employmentStatus;
+    private String employerINN;
+    private BigDecimal salary;
+    private Position position;
+    private Integer workExperienceTotal;
+    private Integer workExperienceCurrent;
 }

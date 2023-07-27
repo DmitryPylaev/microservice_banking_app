@@ -6,9 +6,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.util.List;
+
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "Предложение по кредиту")
 public class CreditDTO {
     private BigDecimal amount;
     private Integer term;

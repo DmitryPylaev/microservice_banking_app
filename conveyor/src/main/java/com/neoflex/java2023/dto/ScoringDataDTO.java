@@ -8,9 +8,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "Запрос на кредит для скоринга")
 public class ScoringDataDTO {
     private BigDecimal amount;
     private Integer term;

@@ -6,9 +6,10 @@ import lombok.Data;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+
 @Data
 @Builder
-@Schema(description = "")
+@Schema(description = "График платежей")
 public class PaymentScheduleElement {
     private Integer number;
     private LocalDate date;

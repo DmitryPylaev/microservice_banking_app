@@ -21,7 +21,7 @@ import java.util.List;
 @RequestMapping("/conveyor")
 @AllArgsConstructor
 @Log4j2
-@Tag(name = "ConveyorController", description = "Контроллер конвейра")
+@Tag(name = "ConveyorController", description = "Контроллер кредитного конвейра")
 public class ConveyorController {
     private OffersService offersService;
 
