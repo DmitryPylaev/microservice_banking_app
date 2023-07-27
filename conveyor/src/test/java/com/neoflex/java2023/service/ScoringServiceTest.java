@@ -1,6 +1,11 @@
 package com.neoflex.java2023.service;
 
+import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
+import com.neoflex.java2023.dto.ScoringDataDTO;
+import com.neoflex.java2023.dto.enums.EmploymentStatus;
+import com.neoflex.java2023.dto.enums.MaritalStatus;
+import com.neoflex.java2023.dto.enums.Position;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,25 +33,25 @@ class ScoringServiceTest {
 
     @Test
     void evaluateTotalAmount() {
-        BigDecimal amount = BigDecimal.valueOf(100);
+        BigDecimal amount = BigDecimal.valueOf(100000);
 
         Assertions.assertEquals(amount, service.evaluateTotalAmount(amount, false));
-        Assertions.assertEquals(amount.subtract(BigDecimal.valueOf(100), new MathContext(7)), service.evaluateTotalAmount(amount, true));
+        Assertions.assertEquals(amount.subtract(BigDecimal.valueOf(10000), new MathContext(7)), service.evaluateTotalAmount(amount, true));
     }
 
     @Test
     void calculateRate() {
         Assertions.assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(1.5)),
-                service.calculateRate(true, true));
+                service.calculatePrescoringRate(true, true));
 
         Assertions.assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(1)),
-                service.calculateRate(true, false));
+                service.calculatePrescoringRate(true, false));
 
         Assertions.assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(0.5)),
-                service.calculateRate(false, true));
+                service.calculatePrescoringRate(false, true));
 
         Assertions.assertEquals(BigDecimal.valueOf(baseRate),
-                service.calculateRate(false, false));
+                service.calculatePrescoringRate(false, false));
     }
 
     @Test
@@ -60,8 +65,8 @@ class ScoringServiceTest {
     void calcPsk() {
         BigDecimal amount = BigDecimal.valueOf(1000000);
 
-        BigDecimal totalWitInsurance = service.calcPsk(amount, BigDecimal.valueOf(47125), 24, false);
-        BigDecimal totalWithoutInsurance = service.calcPsk(amount, BigDecimal.valueOf(47125), 24, true);
+        BigDecimal totalWitInsurance = service.calculatePsk(amount, BigDecimal.valueOf(47125), 24, false);
+        BigDecimal totalWithoutInsurance = service.calculatePsk(amount, BigDecimal.valueOf(47125), 24, true);
 
         Assertions.assertTrue(BigDecimal.valueOf(6.55).doubleValue() - totalWitInsurance.doubleValue() < 100.0);
         Assertions.assertTrue(BigDecimal.valueOf(11.55).doubleValue() - totalWithoutInsurance.doubleValue() < 100.0);
@@ -84,5 +89,33 @@ class ScoringServiceTest {
                 .build();
 
         Assertions.assertEquals(expected, paymentSchedule.get(10));
+    }
+
+    @Test
+    void calculateScoringRate() {
+        EmploymentDTO employmentDTO = EmploymentDTO.builder()
+                .employmentStatus(EmploymentStatus.EMPLOYED)
+                .salary(BigDecimal.valueOf(100000))
+                .position(Position.MIDDLE)
+                .workExperienceTotal(120)
+                .workExperienceCurrent(120)
+                .build();
+
+        ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
+                .amount(BigDecimal.valueOf(20000))
+                .term(36)
+                .firstName("Vasiliy")
+                .lastName("Petrov")
+                .birthdate(LocalDate.parse("1977-08-16"))
+                .maritalStatus(MaritalStatus.MARRIED)
+                .dependentAmount(1)
+                .employment(employmentDTO)
+                .isInsuranceEnabled(false)
+                .isSalaryClient(false)
+                .build();
+
+        BigDecimal expectedRate = BigDecimal.valueOf(10.0);
+
+        Assertions.assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
     }
 }

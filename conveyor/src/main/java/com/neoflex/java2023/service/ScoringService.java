@@ -1,6 +1,9 @@
 package com.neoflex.java2023.service;
 
+import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
+import com.neoflex.java2023.dto.ScoringDataDTO;
+import com.neoflex.java2023.dto.enums.EmploymentStatus;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -21,10 +24,10 @@ public class ScoringService {
     }
 
     public BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
-        return (isInsuranceEnabled)?amount.subtract(BigDecimal.valueOf(100)):amount;
+        return (isInsuranceEnabled)?amount.subtract(BigDecimal.valueOf(10000)):amount;
     }
 
-    public BigDecimal calculateRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
+    public BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
         BigDecimal result = BigDecimal.valueOf(baseRate);
         if (isInsuranceEnabled) result = result.subtract(BigDecimal.ONE);
         if (isSalaryClient) result = result.subtract(BigDecimal.valueOf(0.5));
@@ -38,7 +41,7 @@ public class ScoringService {
         return amount.multiply(annuityCoefficient, new MathContext(7));
     }
 
-    public BigDecimal calcPsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
+    public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
         BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
         overpayment = (isInsuranceEnabled)?overpayment.add(BigDecimal.valueOf(100000)):overpayment;
         BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(12), new MathContext(7));
@@ -65,5 +68,32 @@ public class ScoringService {
                     .build());
         }
         return paymentSchedule;
+    }
+
+    public BigDecimal calculateScoringRate(ScoringDataDTO scoringDataDTO) {
+        BigDecimal rate = BigDecimal.valueOf(baseRate);
+        EmploymentDTO employmentDTO = scoringDataDTO.getEmployment();
+        if (employmentDTO.getEmploymentStatus().equals(EmploymentStatus.UNEMPLOYED)) throw new RuntimeException("Безработный. Отказ");
+        if (scoringDataDTO.getAmount().compareTo(employmentDTO.getSalary().multiply(BigDecimal.valueOf(20))) > 0) throw new RuntimeException("Низкий доход. Отказ");
+        if (employmentDTO.getWorkExperienceTotal() < 12) throw new RuntimeException("Общий стаж недостаточен");
+        if (employmentDTO.getWorkExperienceCurrent() < 3) throw new RuntimeException("Текущий стаж недостаточен");
+        long age = ChronoUnit.YEARS.between(scoringDataDTO.getBirthdate(), LocalDate.now());
+        if (age < 18) throw new RuntimeException("Нет 18 лет");
+        if (age > 60) throw new RuntimeException("Больше 60 лет");
+
+        if (scoringDataDTO.getDependentAmount() > 1) rate = rate.add(BigDecimal.ONE);
+        if (scoringDataDTO.getIsInsuranceEnabled()) rate = rate.subtract(BigDecimal.ONE);
+        if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(0.5));
+
+        switch (employmentDTO.getPosition()) {
+            case MIDDLE -> rate = rate.subtract(BigDecimal.valueOf(2));
+            case SENIOR -> rate = rate.subtract(BigDecimal.valueOf(4));
+        }
+        switch (scoringDataDTO.getMaritalStatus()) {
+            case SINGLE -> rate = rate.add(BigDecimal.ONE);
+            case MARRIED -> rate = rate.subtract(BigDecimal.valueOf(3));
+        }
+
+        return rate;
     }
 }

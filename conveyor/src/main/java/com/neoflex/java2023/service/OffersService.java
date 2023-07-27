@@ -1,7 +1,6 @@
 package com.neoflex.java2023.service;
 
-import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
-import com.neoflex.java2023.dto.LoanOfferDTO;
+import com.neoflex.java2023.dto.*;
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -15,20 +14,20 @@ import java.util.stream.Stream;
 public class OffersService {
 
     private final ScoringService scoringService;
-    public List<LoanOfferDTO> getPreparedOffers(LoanApplicationRequestDTO dto) {
+    public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO dto) {
         return Stream.of(
-                createOffer(false, false, dto),
-                createOffer(true, false, dto),
-                createOffer(false, true, dto),
-                createOffer(true, true, dto)
+                createPrescoringOffer(true, true, dto),
+                createPrescoringOffer(true, false, dto),
+                createPrescoringOffer(false, true, dto),
+                createPrescoringOffer(false, false, dto)
         ).sorted(Comparator.comparing(LoanOfferDTO::getRate)).toList();
     }
 
-    private LoanOfferDTO createOffer(Boolean isInsuranceEnabled,
-                                     Boolean isSalaryClient,
-                                     LoanApplicationRequestDTO dto) {
+    private LoanOfferDTO createPrescoringOffer(Boolean isInsuranceEnabled,
+                                               Boolean isSalaryClient,
+                                               LoanApplicationRequestDTO dto) {
 
-        BigDecimal rate = scoringService.calculateRate(isInsuranceEnabled, isSalaryClient);
+        BigDecimal rate = scoringService.calculatePrescoringRate(isInsuranceEnabled, isSalaryClient);
         BigDecimal totalAmount = scoringService.evaluateTotalAmount(dto.getAmount(), isInsuranceEnabled);
         BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(dto.getAmount(), dto.getTerm(), rate);
 
@@ -40,6 +39,29 @@ public class OffersService {
                 .isSalaryClient(isSalaryClient)
                 .rate(rate)
                 .monthlyPayment(monthlyPayment)
+                .build();
+    }
+
+    public CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO) {
+        BigDecimal amount = scoringDataDTO.getAmount();
+        Integer term = scoringDataDTO.getTerm();
+        Boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();
+
+        BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
+        BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
+        BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(amount, term, rate);
+        BigDecimal psk = scoringService.calculatePsk(amount, monthlyPayment, term, isInsuranceEnabled);
+        List<PaymentScheduleElement> paymentSchedule = scoringService.paymentScheduleBuild(amount, term, rate, monthlyPayment);
+
+        return CreditDTO.builder()
+                .amount(totalAmount)
+                .term(term)
+                .monthlyPayment(monthlyPayment)
+                .rate(rate)
+                .psk(psk)
+                .isInsuranceEnabled(isInsuranceEnabled)
+                .isSalaryClient(scoringDataDTO.getIsSalaryClient())
+                .paymentSchedule(paymentSchedule)
                 .build();
     }
 
