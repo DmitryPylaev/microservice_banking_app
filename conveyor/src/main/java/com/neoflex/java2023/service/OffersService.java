@@ -6,6 +6,7 @@ import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Stream;
@@ -58,6 +59,18 @@ public class OffersService {
         Boolean isSalaryClient = scoringDataDTO.getIsSalaryClient();
 
         BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
+        
+        if (rate.equals(BigDecimal.valueOf(999))) return CreditDTO.builder()
+                .amount(amount)
+                .term(term)
+                .monthlyPayment(BigDecimal.ZERO)
+                .rate(rate)
+                .psk(BigDecimal.ZERO)
+                .isInsuranceEnabled(isInsuranceEnabled)
+                .isSalaryClient(isSalaryClient)
+                .paymentSchedule(new ArrayList<>())
+                .build();
+
         BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
         BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(amount, term, rate);
         BigDecimal psk = scoringService.calculatePsk(amount, monthlyPayment, term, isInsuranceEnabled);

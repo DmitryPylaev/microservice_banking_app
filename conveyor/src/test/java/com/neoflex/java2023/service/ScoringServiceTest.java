@@ -132,8 +132,12 @@ class ScoringServiceTest {
         scoringDataDTO.setMaritalStatus(MaritalStatus.SINGLE);
 
         assertEquals(BigDecimal.valueOf(12.0), service.calculateScoringRate(scoringDataDTO));
-
         assertTrue(output.getOut().contains("Пол клиента: мужской"));
+
+        scoringDataDTO.setGender(Gender.FEMALE);
+
+        assertEquals(BigDecimal.valueOf(12.0), service.calculateScoringRate(scoringDataDTO));
+        assertTrue(output.getOut().contains("Пол клиента: женский"));
     }
 
     @Test

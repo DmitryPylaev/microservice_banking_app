@@ -109,5 +109,12 @@ class OffersServiceTest {
         assertEquals(monthlyPayment, creditDTO.getMonthlyPayment());
         assertEquals(rate, creditDTO.getRate());
         assertEquals(psk, creditDTO.getPsk());
+
+        scoringDataDTO.setBirthdate(LocalDate.parse("2007-08-16"));
+
+        when(scoringService.calculateScoringRate(scoringDataDTO)).thenReturn(BigDecimal.valueOf(999));
+
+        creditDTO = offersService.createCreditOffer(scoringDataDTO);
+        assertEquals(BigDecimal.valueOf(999), creditDTO.getRate());
     }
 }
