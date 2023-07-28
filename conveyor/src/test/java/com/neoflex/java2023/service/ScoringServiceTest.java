@@ -120,13 +120,19 @@ class ScoringServiceTest {
                 .isSalaryClient(false)
                 .build();
 
-        BigDecimal expectedRate = BigDecimal.valueOf(10.0);
+        assertEquals(BigDecimal.valueOf(10.0), service.calculateScoringRate(scoringDataDTO));
 
-        assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
+        employmentDTO.setPosition(Position.SENIOR);
+
+        assertEquals(BigDecimal.valueOf(8.0), service.calculateScoringRate(scoringDataDTO));
+
+        scoringDataDTO.setMaritalStatus(MaritalStatus.SINGLE);
+
+        assertEquals(BigDecimal.valueOf(12.0), service.calculateScoringRate(scoringDataDTO));
     }
 
     @Test
-    void calculateScoringRateRejectYoung(CapturedOutput output) {
+    void calculateScoringRateReject(CapturedOutput output) {
         EmploymentDTO employmentDTO = EmploymentDTO.builder()
                 .employmentStatus(EmploymentStatus.EMPLOYED)
                 .salary(BigDecimal.valueOf(100000))
@@ -153,35 +159,18 @@ class ScoringServiceTest {
 
         assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
         assertTrue(output.getOut().contains("Отказ в кредите. Нет 18 лет"));
-    }
 
-    @Test
-    void calculateScoringRateRejectUnemployed(CapturedOutput output) {
-        EmploymentDTO employmentDTO = EmploymentDTO.builder()
-                .employmentStatus(EmploymentStatus.UNEMPLOYED)
-                .salary(BigDecimal.valueOf(100000))
-                .position(Position.MIDDLE)
-                .workExperienceTotal(120)
-                .workExperienceCurrent(120)
-                .build();
-
-        ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
-                .amount(BigDecimal.valueOf(20000))
-                .term(36)
-                .firstName("Vasiliy")
-                .lastName("Petrov")
-                .birthdate(LocalDate.parse("2007-08-16"))
-                .maritalStatus(MaritalStatus.MARRIED)
-                .dependentAmount(1)
-                .employment(employmentDTO)
-                .isInsuranceEnabled(false)
-                .isSalaryClient(false)
-                .build();
-
-
-        BigDecimal expectedRate = BigDecimal.valueOf(999);
+        scoringDataDTO.setBirthdate(LocalDate.parse("1997-08-16"));
+        employmentDTO.setEmploymentStatus(EmploymentStatus.UNEMPLOYED);
 
         assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
         assertTrue(output.getOut().contains("Отказ в кредите. Безработный"));
+
+        employmentDTO.setEmploymentStatus(EmploymentStatus.EMPLOYED);
+        employmentDTO.setSalary(BigDecimal.valueOf(10));
+
+        assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
+        assertTrue(output.getOut().contains("Отказ в кредите. Низкий доход"));
     }
+
 }
