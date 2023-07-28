@@ -17,29 +17,32 @@ public class OffersService {
 
     private final ScoringService scoringService;
 
-    public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO dto) {
-        log.info("В методе сервиса подготовки предложений: " +  new Exception().getStackTrace()[1].getMethodName());
+    public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO loanApplicationRequestDTO) {
+        log.info("В методе сервиса подготовки предложений: " + new Exception().getStackTrace()[1].getMethodName());
         return Stream.of(
-                createPrescoringOffer(true, true, dto),
-                createPrescoringOffer(true, false, dto),
-                createPrescoringOffer(false, true, dto),
-                createPrescoringOffer(false, false, dto)
+                createPrescoringOffer(true, true, loanApplicationRequestDTO),
+                createPrescoringOffer(true, false, loanApplicationRequestDTO),
+                createPrescoringOffer(false, true, loanApplicationRequestDTO),
+                createPrescoringOffer(false, false, loanApplicationRequestDTO)
         ).sorted(Comparator.comparing(LoanOfferDTO::getRate)).toList();
     }
 
     private LoanOfferDTO createPrescoringOffer(Boolean isInsuranceEnabled,
                                                Boolean isSalaryClient,
-                                               LoanApplicationRequestDTO dto) {
+                                               LoanApplicationRequestDTO loanApplicationRequestDTO) {
 
         log.info("В методе сервиса подготовки предложений OffersService::createPrescoringOffer");
+        BigDecimal amount = loanApplicationRequestDTO.getAmount();
+        Integer term = loanApplicationRequestDTO.getTerm();
+
         BigDecimal rate = scoringService.calculatePrescoringRate(isInsuranceEnabled, isSalaryClient);
-        BigDecimal totalAmount = scoringService.evaluateTotalAmount(dto.getAmount(), isInsuranceEnabled);
-        BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(dto.getAmount(), dto.getTerm(), rate);
+        BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
+        BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(amount, term, rate);
 
         return LoanOfferDTO.builder()
-                .requestedAmount(dto.getAmount())
+                .requestedAmount(amount)
                 .totalAmount(totalAmount)
-                .term(dto.getTerm())
+                .term(term)
                 .isInsuranceEnabled(isInsuranceEnabled)
                 .isSalaryClient(isSalaryClient)
                 .rate(rate)
@@ -48,10 +51,11 @@ public class OffersService {
     }
 
     public CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO) {
-        log.info("В методе сервиса подготовки предложений: " +  new Exception().getStackTrace()[1].getMethodName());
+        log.info("В методе сервиса подготовки предложений: " + new Exception().getStackTrace()[1].getMethodName());
         BigDecimal amount = scoringDataDTO.getAmount();
         Integer term = scoringDataDTO.getTerm();
         Boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();
+        Boolean isSalaryClient = scoringDataDTO.getIsSalaryClient();
 
         BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
         BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
@@ -66,7 +70,7 @@ public class OffersService {
                 .rate(rate)
                 .psk(psk)
                 .isInsuranceEnabled(isInsuranceEnabled)
-                .isSalaryClient(scoringDataDTO.getIsSalaryClient())
+                .isSalaryClient(isSalaryClient)
                 .paymentSchedule(paymentSchedule)
                 .build();
     }

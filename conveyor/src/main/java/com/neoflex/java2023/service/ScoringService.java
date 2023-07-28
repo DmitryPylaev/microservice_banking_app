@@ -32,10 +32,10 @@ public class ScoringService {
 
     public BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
         log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
-        BigDecimal result = BigDecimal.valueOf(baseRate);
-        if (isInsuranceEnabled) result = result.subtract(BigDecimal.ONE);
-        if (isSalaryClient) result = result.subtract(BigDecimal.valueOf(0.5));
-        return result;
+        BigDecimal rate = BigDecimal.valueOf(baseRate);
+        if (isInsuranceEnabled) rate = rate.subtract(BigDecimal.ONE);
+        if (isSalaryClient) rate = rate.subtract(BigDecimal.valueOf(0.5));
+        return rate;
     }
 
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate) {
@@ -92,11 +92,11 @@ public class ScoringService {
             if (age < 18) throw new RuntimeException("Нет 18 лет");
             if (age > 60) throw new RuntimeException("Больше 60 лет");
         } catch (RuntimeException e) {
-            log.info("В методе сервиса скоринга ScoringService::calculateScoringRate. Отказ в кредите");
-            throw e;
+            log.info("Отказ в кредите. " + e.getMessage());
+            return BigDecimal.valueOf(999);
         }
 
-        log.info("В методе сервиса скоринга ScoringService::calculateScoringRate. Отказа не произошло");
+        log.info("Отказа не произошло");
         if (scoringDataDTO.getDependentAmount() > 1) rate = rate.add(BigDecimal.ONE);
         if (scoringDataDTO.getIsInsuranceEnabled()) rate = rate.subtract(BigDecimal.ONE);
         if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(0.5));
