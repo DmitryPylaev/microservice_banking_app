@@ -109,6 +109,10 @@ public class ScoringService {
             case SINGLE -> rate = rate.add(BigDecimal.ONE);
             case MARRIED -> rate = rate.subtract(BigDecimal.valueOf(3));
         }
+        switch (scoringDataDTO.getGender()) {
+            case MALE -> log.info("Пол клиента: мужской");
+            case FEMALE -> log.info("Пол клиента: женский");
+        }
 
         return rate;
     }

@@ -4,6 +4,7 @@ import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
 import com.neoflex.java2023.dto.ScoringDataDTO;
 import com.neoflex.java2023.dto.enums.EmploymentStatus;
+import com.neoflex.java2023.dto.enums.Gender;
 import com.neoflex.java2023.dto.enums.MaritalStatus;
 import com.neoflex.java2023.dto.enums.Position;
 import org.junit.jupiter.api.Test;
@@ -30,6 +31,29 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 class ScoringServiceTest {
     private final Double baseRate;
     private final ScoringService service;
+
+    private final EmploymentDTO employmentDTO = EmploymentDTO.builder()
+            .employmentStatus(EmploymentStatus.EMPLOYED)
+            .salary(BigDecimal.valueOf(100000))
+            .position(Position.MIDDLE)
+            .workExperienceTotal(120)
+            .workExperienceCurrent(120)
+            .build();
+
+    private final ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
+            .amount(BigDecimal.valueOf(20000))
+            .term(36)
+            .firstName("Vasiliy")
+            .lastName("Petrov")
+            .middleName("Mid")
+            .birthdate(LocalDate.parse("1977-08-16"))
+            .maritalStatus(MaritalStatus.MARRIED)
+            .gender(Gender.MALE)
+            .dependentAmount(1)
+            .employment(employmentDTO)
+            .isInsuranceEnabled(false)
+            .isSalaryClient(false)
+            .build();
 
     @Autowired
     public ScoringServiceTest(@Value("${baseRate}") Double baseRate, ScoringService service) {
@@ -98,28 +122,7 @@ class ScoringServiceTest {
     }
 
     @Test
-    void calculateScoringRateOK() {
-        EmploymentDTO employmentDTO = EmploymentDTO.builder()
-                .employmentStatus(EmploymentStatus.EMPLOYED)
-                .salary(BigDecimal.valueOf(100000))
-                .position(Position.MIDDLE)
-                .workExperienceTotal(120)
-                .workExperienceCurrent(120)
-                .build();
-
-        ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
-                .amount(BigDecimal.valueOf(20000))
-                .term(36)
-                .firstName("Vasiliy")
-                .lastName("Petrov")
-                .birthdate(LocalDate.parse("1977-08-16"))
-                .maritalStatus(MaritalStatus.MARRIED)
-                .dependentAmount(1)
-                .employment(employmentDTO)
-                .isInsuranceEnabled(false)
-                .isSalaryClient(false)
-                .build();
-
+    void calculateScoringRateOK(CapturedOutput output) {
         assertEquals(BigDecimal.valueOf(10.0), service.calculateScoringRate(scoringDataDTO));
 
         employmentDTO.setPosition(Position.SENIOR);
@@ -129,31 +132,13 @@ class ScoringServiceTest {
         scoringDataDTO.setMaritalStatus(MaritalStatus.SINGLE);
 
         assertEquals(BigDecimal.valueOf(12.0), service.calculateScoringRate(scoringDataDTO));
+
+        assertTrue(output.getOut().contains("Пол клиента: мужской"));
     }
 
     @Test
     void calculateScoringRateReject(CapturedOutput output) {
-        EmploymentDTO employmentDTO = EmploymentDTO.builder()
-                .employmentStatus(EmploymentStatus.EMPLOYED)
-                .salary(BigDecimal.valueOf(100000))
-                .position(Position.MIDDLE)
-                .workExperienceTotal(120)
-                .workExperienceCurrent(120)
-                .build();
-
-        ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
-                .amount(BigDecimal.valueOf(20000))
-                .term(36)
-                .firstName("Vasiliy")
-                .lastName("Petrov")
-                .birthdate(LocalDate.parse("2007-08-16"))
-                .maritalStatus(MaritalStatus.MARRIED)
-                .dependentAmount(1)
-                .employment(employmentDTO)
-                .isInsuranceEnabled(false)
-                .isSalaryClient(false)
-                .build();
-
+        scoringDataDTO.setBirthdate(LocalDate.parse("2007-08-16"));
 
         BigDecimal expectedRate = BigDecimal.valueOf(999);
 
