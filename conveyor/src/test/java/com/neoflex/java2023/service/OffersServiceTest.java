@@ -21,7 +21,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {OffersService.class})
+@SpringBootTest(classes = {OffersServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 class OffersServiceTest {
 

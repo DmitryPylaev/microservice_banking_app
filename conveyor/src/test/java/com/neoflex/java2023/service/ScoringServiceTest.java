@@ -25,7 +25,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@SpringBootTest(classes = {ScoringService.class})
+@SpringBootTest(classes = {ScoringServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 @ExtendWith(OutputCaptureExtension.class)
 class ScoringServiceTest {
