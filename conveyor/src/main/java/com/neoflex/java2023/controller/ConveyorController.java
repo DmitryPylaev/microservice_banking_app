@@ -32,14 +32,14 @@ public class ConveyorController {
     @Operation(summary = "Расчёт возможных условий кредита")
     @PostMapping(value = "/offers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<LoanOfferDTO> offers(@RequestBody LoanApplicationRequestDTO dto) {
-        log.info("В методе контроллера Conveyor::offers");
+        log.info("В методе контроллера: " +  new Exception().getStackTrace()[1].getMethodName());
         return offersService.getPrescoringOffers(dto);
     }
 
     @Operation(summary = "Валидация присланных данных + скоринг данных + полный расчет параметров кредита")
     @PostMapping(value = "/calculation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CreditDTO calculation(@RequestBody ScoringDataDTO dto) {
-        log.info("В методе контроллера Conveyor::calculation");
+        log.info("В методе контроллера: " +  new Exception().getStackTrace()[1].getMethodName());
         return offersService.createCreditOffer(dto);
     }
 }

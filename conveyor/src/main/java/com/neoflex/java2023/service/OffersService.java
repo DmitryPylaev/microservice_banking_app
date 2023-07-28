@@ -18,7 +18,7 @@ public class OffersService {
     private final ScoringService scoringService;
 
     public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO dto) {
-        log.info("В методе сервиса подготовки предложений OffersService::getPrescoringOffers");
+        log.info("В методе сервиса подготовки предложений: " +  new Exception().getStackTrace()[1].getMethodName());
         return Stream.of(
                 createPrescoringOffer(true, true, dto),
                 createPrescoringOffer(true, false, dto),
@@ -48,7 +48,7 @@ public class OffersService {
     }
 
     public CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO) {
-        log.info("В методе сервиса подготовки предложений OffersService::createCreditOffer");
+        log.info("В методе сервиса подготовки предложений: " +  new Exception().getStackTrace()[1].getMethodName());
         BigDecimal amount = scoringDataDTO.getAmount();
         Integer term = scoringDataDTO.getTerm();
         Boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();

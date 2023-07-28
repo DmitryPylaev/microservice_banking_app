@@ -26,12 +26,12 @@ public class ScoringService {
     }
 
     public BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
-        log.info("В методе сервиса скоринга ScoringService::evaluateTotalAmount");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         return (isInsuranceEnabled) ? amount.subtract(BigDecimal.valueOf(10000)) : amount;
     }
 
     public BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
-        log.info("В методе сервиса скоринга ScoringService::calculatePrescoringRate");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         BigDecimal result = BigDecimal.valueOf(baseRate);
         if (isInsuranceEnabled) result = result.subtract(BigDecimal.ONE);
         if (isSalaryClient) result = result.subtract(BigDecimal.valueOf(0.5));
@@ -39,7 +39,7 @@ public class ScoringService {
     }
 
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate) {
-        log.info("В методе сервиса скоринга ScoringService::calculateMonthlyPayment");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         BigDecimal monthRate = rate.divide(BigDecimal.valueOf(12 * 100), new MathContext(7));
         BigDecimal percent = monthRate.add(BigDecimal.ONE).pow(term);
         BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), new MathContext(7)));
@@ -47,7 +47,7 @@ public class ScoringService {
     }
 
     public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
-        log.info("В методе сервиса скоринга ScoringService::calculatePsk");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
         overpayment = (isInsuranceEnabled) ? overpayment.add(BigDecimal.valueOf(100000)) : overpayment;
         BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(12), new MathContext(7));
@@ -58,7 +58,7 @@ public class ScoringService {
     }
 
     public List<PaymentScheduleElement> paymentScheduleBuild(BigDecimal amount, Integer term, BigDecimal rate, BigDecimal monthlyPayment) {
-        log.info("В методе сервиса скоринга ScoringService::paymentScheduleBuild");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         List<PaymentScheduleElement> paymentSchedule = new ArrayList<>();
         for (int i = 0; i < term; i++) {
             BigDecimal interestPayment = rate.divide(BigDecimal.valueOf(12 * 100), new MathContext(6)).multiply(amount, new MathContext(6));
@@ -78,7 +78,7 @@ public class ScoringService {
     }
 
     public BigDecimal calculateScoringRate(ScoringDataDTO scoringDataDTO) {
-        log.info("В методе сервиса скоринга ScoringService::calculateScoringRate");
+        log.info("В методе сервиса скоринга: " +  new Exception().getStackTrace()[1].getMethodName());
         BigDecimal rate = BigDecimal.valueOf(baseRate);
         EmploymentDTO employmentDTO = scoringDataDTO.getEmployment();
         try {
