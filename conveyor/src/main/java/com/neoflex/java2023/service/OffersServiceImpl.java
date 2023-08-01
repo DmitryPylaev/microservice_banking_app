@@ -1,8 +1,9 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
-import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -12,30 +13,37 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-@AllArgsConstructor
 @Log4j2
 public class OffersServiceImpl implements OffersService {
 
     private final ScoringService scoringService;
+    private final Integer denyRate;
+
+    @Autowired
+    public OffersServiceImpl(ScoringService scoringService,
+                             @Value("${denyRate}") Integer denyRate) {
+        this.scoringService = scoringService;
+        this.denyRate = denyRate;
+    }
 
     @Override
-    public List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO loanApplicationRequestDTO) {
+    public List<LoanOfferDTO> createPrescoringOffers(LoanApplicationRequestDTO request) {
         log.info("В методе сервиса подготовки предложений: " + new Exception().getStackTrace()[1].getMethodName());
         return Stream.of(
-                createPrescoringOffer(true, true, loanApplicationRequestDTO),
-                createPrescoringOffer(true, false, loanApplicationRequestDTO),
-                createPrescoringOffer(false, true, loanApplicationRequestDTO),
-                createPrescoringOffer(false, false, loanApplicationRequestDTO)
+                createPrescoringOffer(true, true, request),
+                createPrescoringOffer(true, false, request),
+                createPrescoringOffer(false, true, request),
+                createPrescoringOffer(false, false, request)
         ).sorted(Comparator.comparing(LoanOfferDTO::getRate)).toList();
     }
 
     private LoanOfferDTO createPrescoringOffer(Boolean isInsuranceEnabled,
                                                Boolean isSalaryClient,
-                                               LoanApplicationRequestDTO loanApplicationRequestDTO) {
+                                               LoanApplicationRequestDTO request) {
 
         log.info("В методе сервиса подготовки предложений OffersService::createPrescoringOffer");
-        BigDecimal amount = loanApplicationRequestDTO.getAmount();
-        Integer term = loanApplicationRequestDTO.getTerm();
+        BigDecimal amount = request.getAmount();
+        Integer term = request.getTerm();
 
         BigDecimal rate = scoringService.calculatePrescoringRate(isInsuranceEnabled, isSalaryClient);
         BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
@@ -62,7 +70,7 @@ public class OffersServiceImpl implements OffersService {
 
         BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
 
-        if (rate.equals(BigDecimal.valueOf(999))) return CreditDTO.builder()
+        if (rate.equals(BigDecimal.valueOf(denyRate))) return CreditDTO.builder()
                 .amount(amount)
                 .term(term)
                 .monthlyPayment(BigDecimal.ZERO)

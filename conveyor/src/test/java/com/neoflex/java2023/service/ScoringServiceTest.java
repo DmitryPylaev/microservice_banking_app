@@ -30,6 +30,11 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ExtendWith(OutputCaptureExtension.class)
 class ScoringServiceTest {
     private final Double baseRate;
+    private final Integer denyRate;
+    private final Integer insurancePrice;
+    private final Double insuranceRateDiscount;
+    private final Double salaryClientRateDiscount;
+
     private final ScoringService service;
 
     private final EmploymentDTO employmentDTO = EmploymentDTO.builder()
@@ -56,8 +61,17 @@ class ScoringServiceTest {
             .build();
 
     @Autowired
-    public ScoringServiceTest(@Value("${baseRate}") Double baseRate, ScoringService service) {
+    public ScoringServiceTest(@Value("${baseRate}") Double baseRate,
+                              @Value("${denyRate}") Integer denyRate,
+                              @Value("${insurancePrice}") Integer insurancePrice,
+                              @Value("${insuranceRateDiscount}") Double insuranceRateDiscount,
+                              @Value("${salaryClientRateDiscount}") Double salaryClientRateDiscount,
+                              ScoringService service) {
         this.baseRate = baseRate;
+        this.denyRate = denyRate;
+        this.insurancePrice = insurancePrice;
+        this.insuranceRateDiscount = insuranceRateDiscount;
+        this.salaryClientRateDiscount = salaryClientRateDiscount;
         this.service = service;
     }
 
@@ -66,18 +80,18 @@ class ScoringServiceTest {
         BigDecimal amount = BigDecimal.valueOf(100000);
 
         assertEquals(amount, service.evaluateTotalAmount(amount, false));
-        assertEquals(amount.subtract(BigDecimal.valueOf(10000), new MathContext(7)), service.evaluateTotalAmount(amount, true));
+        assertEquals(amount.subtract(BigDecimal.valueOf(insurancePrice), new MathContext(7)), service.evaluateTotalAmount(amount, true));
     }
 
     @Test
     void calculateRate() {
-        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(1.5)),
+        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(insuranceRateDiscount + salaryClientRateDiscount)),
                 service.calculatePrescoringRate(true, true));
 
-        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(1)),
+        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(insuranceRateDiscount)),
                 service.calculatePrescoringRate(true, false));
 
-        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(0.5)),
+        assertEquals(BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(salaryClientRateDiscount)),
                 service.calculatePrescoringRate(false, true));
 
         assertEquals(BigDecimal.valueOf(baseRate),
@@ -144,7 +158,7 @@ class ScoringServiceTest {
     void calculateScoringRateReject(CapturedOutput output) {
         scoringDataDTO.setBirthdate(LocalDate.parse("2007-08-16"));
 
-        BigDecimal expectedRate = BigDecimal.valueOf(999);
+        BigDecimal expectedRate = BigDecimal.valueOf(denyRate);
 
         assertEquals(expectedRate, service.calculateScoringRate(scoringDataDTO));
         assertTrue(output.getOut().contains("Отказ в кредите. Нет 18 лет"));

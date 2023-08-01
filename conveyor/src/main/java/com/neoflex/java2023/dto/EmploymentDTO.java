@@ -10,7 +10,7 @@ import java.math.BigDecimal;
 
 @Data
 @Builder
-@Schema(description = "Карточка работника")
+@Schema(description = "Информация о занятости клиента")
 public class EmploymentDTO {
     private EmploymentStatus employmentStatus;
     private String employerINN;

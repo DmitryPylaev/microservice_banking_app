@@ -9,7 +9,7 @@ import java.util.List;
 
 @Data
 @Builder
-@Schema(description = "Предложение по кредиту")
+@Schema(description = "Параметры кредита")
 public class CreditDTO {
     private BigDecimal amount;
     private Integer term;

@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,6 +26,24 @@ import static org.mockito.Mockito.when;
 @ComponentScan("com.neoflex.java2023")
 class OffersServiceTest {
 
+    private final Double baseRate;
+    private final Integer denyRate;
+    private final Integer insurancePrice;
+    private final Double insuranceRateDiscount;
+    private final Double salaryClientRateDiscount;
+
+    public OffersServiceTest(@Value("${baseRate}") Double baseRate,
+                             @Value("${denyRate}") Integer denyRate,
+                             @Value("${insurancePrice}") Integer insurancePrice,
+                             @Value("${insuranceRateDiscount}") Double insuranceRateDiscount,
+                             @Value("${salaryClientRateDiscount}") Double salaryClientRateDiscount) {
+        this.baseRate = baseRate;
+        this.denyRate = denyRate;
+        this.insurancePrice = insurancePrice;
+        this.insuranceRateDiscount = insuranceRateDiscount;
+        this.salaryClientRateDiscount = salaryClientRateDiscount;
+    }
+
     @MockBean
     ScoringService scoringService;
 
@@ -34,7 +53,7 @@ class OffersServiceTest {
     @Test
     void getPreparedOffers() {
         BigDecimal amount = BigDecimal.valueOf(300000);
-        BigDecimal amountWithInsurance = amount.subtract(BigDecimal.valueOf(10000));
+        BigDecimal amountWithInsurance = amount.subtract(BigDecimal.valueOf(insurancePrice));
 
         LoanApplicationRequestDTO dto = LoanApplicationRequestDTO.builder()
                 .amount(amount)
@@ -47,22 +66,23 @@ class OffersServiceTest {
                 .passportNumber("576687")
                 .build();
 
-        when(scoringService.calculatePrescoringRate(any(), any())).thenReturn(BigDecimal.valueOf(15).subtract(BigDecimal.valueOf(1.5)),
-                BigDecimal.valueOf(15).subtract(BigDecimal.ONE),
-                BigDecimal.valueOf(15).subtract(BigDecimal.valueOf(0.5)),
-                BigDecimal.valueOf(15));
-        when(scoringService.calculateMonthlyPayment(amount, 18, BigDecimal.valueOf(15))).thenReturn(BigDecimal.valueOf(18714.44));
+        when(scoringService.calculatePrescoringRate(any(), any())).thenReturn(BigDecimal.valueOf(baseRate)
+                        .subtract(BigDecimal.valueOf(insuranceRateDiscount + salaryClientRateDiscount)),
+                BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(insuranceRateDiscount)),
+                BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(salaryClientRateDiscount)),
+                BigDecimal.valueOf(baseRate));
+        when(scoringService.calculateMonthlyPayment(amount, 18, BigDecimal.valueOf(baseRate))).thenReturn(BigDecimal.valueOf(18714.44));
         when(scoringService.evaluateTotalAmount(amount, false)).thenReturn(amount);
         when(scoringService.evaluateTotalAmount(amount, true)).thenReturn(amountWithInsurance);
 
-        List<LoanOfferDTO> result = offersService.getPrescoringOffers(dto);
+        List<LoanOfferDTO> result = offersService.createPrescoringOffers(dto);
 
         assertEquals(4, result.size());
         assertEquals(amount, result.get(0).getRequestedAmount());
         verify(scoringService, Mockito.times(4)).evaluateTotalAmount(any(), any());
         verify(scoringService, Mockito.times(4)).calculatePrescoringRate(any(), any());
 
-        Assertions.assertDoesNotThrow(() -> offersService.getPrescoringOffers(dto));
+        Assertions.assertDoesNotThrow(() -> offersService.createPrescoringOffers(dto));
 
         assertEquals(amountWithInsurance, result.get(0).getTotalAmount());
         assertEquals(amountWithInsurance, result.get(1).getTotalAmount());
@@ -115,6 +135,6 @@ class OffersServiceTest {
         when(scoringService.calculateScoringRate(scoringDataDTO)).thenReturn(BigDecimal.valueOf(999));
 
         creditDTO = offersService.createCreditOffer(scoringDataDTO);
-        assertEquals(BigDecimal.valueOf(999), creditDTO.getRate());
+        assertEquals(BigDecimal.valueOf(denyRate), creditDTO.getRate());
     }
 }

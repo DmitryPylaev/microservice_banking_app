@@ -8,7 +8,7 @@ import com.neoflex.java2023.dto.ScoringDataDTO;
 import java.util.List;
 
 public interface OffersService {
-    List<LoanOfferDTO> getPrescoringOffers(LoanApplicationRequestDTO loanApplicationRequestDTO);
+    List<LoanOfferDTO> createPrescoringOffers(LoanApplicationRequestDTO request);
 
-    CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO);
+    CreditDTO createCreditOffer(ScoringDataDTO request);
 }
