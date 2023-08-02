@@ -118,7 +118,7 @@ class ScoringServiceTest {
 
     @Test
     void paymentScheduleBuild() {
-        BigDecimal amount = BigDecimal.valueOf(20000);
+        BigDecimal amount = BigDecimal.valueOf(20002);
         BigDecimal monthlyPayment = BigDecimal.valueOf(664.29);
 
         List<PaymentScheduleElement> paymentSchedule = service.paymentScheduleBuild(amount, 36, BigDecimal.valueOf(12), monthlyPayment);
@@ -127,9 +127,9 @@ class ScoringServiceTest {
                 .number(11)
                 .date(LocalDate.now().plus(11, ChronoUnit.MONTHS))
                 .totalPayment(monthlyPayment)
-                .interestPayment(BigDecimal.valueOf(151.425))
-                .debtPayment(BigDecimal.valueOf(512.865))
-                .remainingDebt(BigDecimal.valueOf(14629.635))
+                .interestPayment(BigDecimal.valueOf(151.4471))
+                .debtPayment(BigDecimal.valueOf(512.8429))
+                .remainingDebt(BigDecimal.valueOf(14631.8657))
                 .build();
 
         assertEquals(expected, paymentSchedule.get(10));
