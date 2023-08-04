@@ -1,9 +1,9 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
-import com.neoflex.java2023.dto.enums.EmploymentStatus;
-import com.neoflex.java2023.dto.enums.MaritalStatus;
-import com.neoflex.java2023.dto.enums.Position;
+import com.neoflex.java2023.enums.EmploymentPosition;
+import com.neoflex.java2023.enums.EmploymentStatus;
+import com.neoflex.java2023.enums.MaritalStatus;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -102,7 +102,7 @@ class OffersServiceTest {
         EmploymentDTO employmentDTO = EmploymentDTO.builder()
                 .employmentStatus(EmploymentStatus.EMPLOYED)
                 .salary(BigDecimal.valueOf(100000))
-                .position(Position.JUNIOR)
+                .position(EmploymentPosition.WORKER)
                 .workExperienceTotal(120)
                 .workExperienceCurrent(120)
                 .build();

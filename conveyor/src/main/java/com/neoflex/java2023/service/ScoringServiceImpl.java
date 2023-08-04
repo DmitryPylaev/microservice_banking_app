@@ -3,7 +3,7 @@ package com.neoflex.java2023.service;
 import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
 import com.neoflex.java2023.dto.ScoringDataDTO;
-import com.neoflex.java2023.dto.enums.EmploymentStatus;
+import com.neoflex.java2023.enums.EmploymentStatus;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -155,8 +155,8 @@ public class ScoringServiceImpl implements ScoringService {
         if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
 
         switch (employmentDTO.getPosition()) {
-            case MIDDLE -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
-            case SENIOR -> rate = rate.subtract(BigDecimal.valueOf(seniorRateDiscount));
+            case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
+            case TOP_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(seniorRateDiscount));
         }
         switch (scoringDataDTO.getMaritalStatus()) {
             case SINGLE -> rate = rate.subtract(BigDecimal.valueOf(singleRateDiscount));

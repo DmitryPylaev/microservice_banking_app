@@ -3,10 +3,10 @@ package com.neoflex.java2023.service;
 import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
 import com.neoflex.java2023.dto.ScoringDataDTO;
-import com.neoflex.java2023.dto.enums.EmploymentStatus;
-import com.neoflex.java2023.dto.enums.Gender;
-import com.neoflex.java2023.dto.enums.MaritalStatus;
-import com.neoflex.java2023.dto.enums.Position;
+import com.neoflex.java2023.enums.EmploymentPosition;
+import com.neoflex.java2023.enums.EmploymentStatus;
+import com.neoflex.java2023.enums.Gender;
+import com.neoflex.java2023.enums.MaritalStatus;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,7 +40,7 @@ class ScoringServiceTest {
     private final EmploymentDTO employmentDTO = EmploymentDTO.builder()
             .employmentStatus(EmploymentStatus.EMPLOYED)
             .salary(BigDecimal.valueOf(100000))
-            .position(Position.MIDDLE)
+            .position(EmploymentPosition.MID_MANAGER)
             .workExperienceTotal(120)
             .workExperienceCurrent(120)
             .build();
@@ -139,7 +139,7 @@ class ScoringServiceTest {
     void calculateScoringRateOK(CapturedOutput output) {
         assertEquals(BigDecimal.valueOf(10.0), service.calculateScoringRate(scoringDataDTO));
 
-        employmentDTO.setPosition(Position.SENIOR);
+        employmentDTO.setPosition(EmploymentPosition.TOP_MANAGER);
 
         assertEquals(BigDecimal.valueOf(8.0), service.calculateScoringRate(scoringDataDTO));
 
