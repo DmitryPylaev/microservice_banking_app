@@ -6,12 +6,14 @@ import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
 import com.neoflex.java2023.dto.LoanOfferDTO;
 import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
+import com.neoflex.java2023.model.json.StatusHistoryJSON;
+import com.neoflex.java2023.model.jsonb.StatusHistory;
 import com.neoflex.java2023.model.relation.Application;
 import com.neoflex.java2023.model.relation.Client;
-import com.neoflex.java2023.model.jsonb.StatusHistory;
-import com.neoflex.java2023.model.json.StatusHistoryJSON;
+import com.neoflex.java2023.model.relation.Credit;
 import com.neoflex.java2023.repository.ApplicationRepository;
 import com.neoflex.java2023.repository.ClientRepository;
+import com.neoflex.java2023.repository.CreditRepository;
 import com.neoflex.java2023.util.CustomLogger;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
@@ -28,6 +30,7 @@ public class DealService {
     private ApplicationService applicationService;
     private ClientRepository clientRepository;
     private ApplicationRepository applicationRepository;
+    private CreditRepository creditRepository;
 
 
     public List<LoanOfferDTO> acceptRequest(LoanApplicationRequestDTO request) {
@@ -63,7 +66,14 @@ public class DealService {
     public CreditDTO calculate(FinishRegistrationRequestDTO request, Long applicationId) {
         Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
         if (optionalApplication.isEmpty()) return CreditDTO.builder().build();
-        else return applicationService.getCredit(request, optionalApplication.get());
+        else {
+            Application application = optionalApplication.get();
+            CreditDTO creditDto = applicationService.getCreditDtoFromRemote(request, application);
+            Credit credit = creditRepository.save(applicationService.mapCredit(creditDto));
+            application.setCredit(credit);
+            applicationRepository.save(application);
+            return creditDto;
+        }
     }
 
 }

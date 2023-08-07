@@ -41,11 +41,11 @@
             <version>${openfeign.version}</version>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>com.fasterxml.jackson.datatype</groupId>-->
-<!--            <artifactId>jackson-datatype-jsr310</artifactId>-->
-<!--            <version>${jackson-datatype.version}</version>-->
-<!--        </dependency>-->
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-validator</artifactId>
+            <version>${hibenate-validator.version}</version>
+        </dependency>
 
         <dependency>
             <groupId>org.testcontainers</groupId>
@@ -65,8 +65,8 @@
     <properties>
         <postgresql.version>42.6.0</postgresql.version>
         <openfeign.version>4.0.4</openfeign.version>
-        <jackson-datatype.version>2.15.2</jackson-datatype.version>
         <testcontainers.version>1.17.6</testcontainers.version>
+        <hibenate-validator.version>8.0.1.Final</hibenate-validator.version>
         <liquibase-core.version>4.22.0</liquibase-core.version>
     </properties>
 

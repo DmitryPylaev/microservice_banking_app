@@ -3,12 +3,14 @@ package com.neoflex.java2023.service;
 import com.neoflex.java2023.dto.*;
 import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
-import com.neoflex.java2023.model.relation.Application;
-import com.neoflex.java2023.model.relation.Client;
-import com.neoflex.java2023.model.jsonb.Passport;
-import com.neoflex.java2023.model.jsonb.StatusHistory;
+import com.neoflex.java2023.enums.CreditStatus;
 import com.neoflex.java2023.model.json.PassportJSON;
 import com.neoflex.java2023.model.json.StatusHistoryJSON;
+import com.neoflex.java2023.model.jsonb.Passport;
+import com.neoflex.java2023.model.jsonb.StatusHistory;
+import com.neoflex.java2023.model.relation.Application;
+import com.neoflex.java2023.model.relation.Client;
+import com.neoflex.java2023.model.relation.Credit;
 import com.neoflex.java2023.repository.PassportRepository;
 import com.neoflex.java2023.repository.StatusHistoryRepository;
 import lombok.AllArgsConstructor;
@@ -67,10 +69,10 @@ public class ApplicationService {
         return offers;
     }
 
-    public CreditDTO getCredit(FinishRegistrationRequestDTO request, Application application) {
+    public CreditDTO getCreditDtoFromRemote(FinishRegistrationRequestDTO request, Application application) {
         Client client = application.getClient();
         LoanOfferDTO appliedOffer = application.getAppliedOffer();
-        ScoringDataDTO scoringDataDTO = ScoringDataDTO.builder()
+        return feignConveyor.getCredit(ScoringDataDTO.builder()
                 .amount(appliedOffer.getTotalAmount())
                 .term(appliedOffer.getTerm())
                 .isInsuranceEnabled(appliedOffer.getIsInsuranceEnabled())
@@ -88,7 +90,20 @@ public class ApplicationService {
                 .passportIssueBranch(request.getPassportIssueBranch())
                 .employment(request.getEmployment())
                 .account(request.getAccount())
+                .build());
+    }
+
+    public Credit mapCredit(CreditDTO creditDTO) {
+        return Credit.builder()
+                .amount(creditDTO.getAmount())
+                .term(creditDTO.getTerm())
+                .monthlyPayment(creditDTO.getMonthlyPayment())
+                .rate(creditDTO.getRate())
+                .psk(creditDTO.getPsk())
+                .paymentSchedule(creditDTO.getPaymentSchedule())
+                .insuranceEnabled(creditDTO.getIsInsuranceEnabled())
+                .salaryClient(creditDTO.getIsSalaryClient())
+                .creditStatus(CreditStatus.CALCULATED)
                 .build();
-        return feignConveyor.getCredit(scoringDataDTO);
     }
 }

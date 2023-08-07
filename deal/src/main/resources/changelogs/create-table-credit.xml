@@ -27,7 +27,7 @@
                 <column name="payment_schedule" type="jsonb">
                     <constraints  nullable="false"/>
                 </column>
-                <column name="insurance_enable" type="boolean">
+                <column name="insurance_enabled" type="boolean">
                     <constraints  nullable="false"/>
                 </column>
                 <column name="salary_client" type="boolean">

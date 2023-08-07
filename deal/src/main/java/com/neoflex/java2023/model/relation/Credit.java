@@ -8,6 +8,7 @@ import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Entity
@@ -25,23 +26,23 @@ public class Credit {
     private long id;
 
     @Column(name = "amount")
-    private Double amount;
+    private BigDecimal amount;
 
     @Column(name = "term")
     private Integer term;
 
     @Column(name = "monthly_payment")
-    private Double monthlyPayment;
+    private BigDecimal monthlyPayment;
 
     @Column(name = "rate")
-    private Double rate;
+    private BigDecimal rate;
 
     @Column(name = "psk")
-    private Double psk;
+    private BigDecimal psk;
 
     @Column(name = "payment_schedule")
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<PaymentScheduleElement> payment_schedule;
+    private List<PaymentScheduleElement> paymentSchedule;
 
     @Column(name = "insurance_enabled")
     private Boolean insuranceEnabled;
