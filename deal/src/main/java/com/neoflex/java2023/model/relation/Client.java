@@ -14,12 +14,11 @@ import java.time.LocalDate;
 
 @Entity
 @Table(name = "client")
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value= {"handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Client {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "client_id_seq")

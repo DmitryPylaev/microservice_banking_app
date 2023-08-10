@@ -11,10 +11,9 @@ import java.io.Serializable;
 
 @Entity
 @Table(name = "passport")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@JsonIgnoreProperties(value= {"handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Passport implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "passport_id_seq")

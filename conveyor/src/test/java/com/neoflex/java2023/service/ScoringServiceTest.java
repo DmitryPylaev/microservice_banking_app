@@ -7,6 +7,7 @@ import com.neoflex.java2023.enums.EmploymentPosition;
 import com.neoflex.java2023.enums.EmploymentStatus;
 import com.neoflex.java2023.enums.Gender;
 import com.neoflex.java2023.enums.MaritalStatus;
+import com.neoflex.java2023.service.abstraction.ScoringService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;

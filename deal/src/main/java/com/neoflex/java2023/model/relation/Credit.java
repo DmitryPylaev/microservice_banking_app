@@ -13,12 +13,11 @@ import java.util.List;
 
 @Entity
 @Table(name = "credit")
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value= {"handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Credit {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "credit_id_seq")

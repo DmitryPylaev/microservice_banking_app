@@ -3,10 +3,9 @@ package com.neoflex.java2023.model.jsonb;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java2023.model.json.StatusHistoryJSON;
 import jakarta.persistence.*;
+import lombok.Data;
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
@@ -15,10 +14,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "status_history")
-@Getter
-@Setter
+@Data
 @NoArgsConstructor
-@JsonIgnoreProperties(value= {"handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class StatusHistory implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "status_history_id_seq")

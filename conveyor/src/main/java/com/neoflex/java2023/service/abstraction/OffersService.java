@@ -1,4 +1,4 @@
-package com.neoflex.java2023.service;
+package com.neoflex.java2023.service.abstraction;
 
 import com.neoflex.java2023.dto.CreditDTO;
 import com.neoflex.java2023.dto.LoanApplicationRequestDTO;

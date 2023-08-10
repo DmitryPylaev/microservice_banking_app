@@ -13,12 +13,11 @@ import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "application")
-@Getter
-@Setter
+@Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-@JsonIgnoreProperties(value= {"handler","hibernateLazyInitializer","FieldHandler"})
+@JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Application {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "application_id_seq")
@@ -38,6 +37,7 @@ public class Application {
     private ApplicationStatus status;
 
     @Column(name = "creation_date")
+    @EqualsAndHashCode.Exclude
     private LocalDateTime creationDate;
 
     @Column(name = "applied_offer")

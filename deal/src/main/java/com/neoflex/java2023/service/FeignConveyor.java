@@ -17,5 +17,5 @@ public interface FeignConveyor {
     List<LoanOfferDTO> getCreatedOffers(@RequestBody LoanApplicationRequestDTO request);
 
     @PostMapping("calculation")
-    CreditDTO getCredit(@RequestBody ScoringDataDTO request);
+    CreditDTO getCalculatedCredit(@RequestBody ScoringDataDTO request);
 }

@@ -3,33 +3,36 @@ package com.neoflex.java2023.service;
 import com.neoflex.java2023.dto.*;
 import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
-import com.neoflex.java2023.enums.CreditStatus;
 import com.neoflex.java2023.model.json.PassportJSON;
 import com.neoflex.java2023.model.json.StatusHistoryJSON;
 import com.neoflex.java2023.model.jsonb.Passport;
 import com.neoflex.java2023.model.jsonb.StatusHistory;
 import com.neoflex.java2023.model.relation.Application;
 import com.neoflex.java2023.model.relation.Client;
-import com.neoflex.java2023.model.relation.Credit;
 import com.neoflex.java2023.repository.PassportRepository;
 import com.neoflex.java2023.repository.StatusHistoryRepository;
+import com.neoflex.java2023.service.abstraction.ApplicationService;
+import com.neoflex.java2023.util.CustomLogger;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 @AllArgsConstructor
 @Log4j2
-public class ApplicationService {
+public class ApplicationServiceImpl implements ApplicationService {
     private PassportRepository passportRepository;
     private StatusHistoryRepository statusHistoryRepository;
     private FeignConveyor feignConveyor;
 
+    @Override
     public Client createClient(LoanApplicationRequestDTO request) {
+        CustomLogger.logInfoClassAndMethod();
         Passport passport = passportRepository.save(new Passport(PassportJSON.builder()
                 .series(request.getPassportSeries())
                 .number(request.getPassportNumber())
@@ -45,10 +48,12 @@ public class ApplicationService {
                 .build();
     }
 
+    @Override
     public Application createApplication(Client client) {
+        CustomLogger.logInfoClassAndMethod();
         StatusHistoryJSON statusHistoryJSON = StatusHistoryJSON.builder()
                 .status(ApplicationStatus.PREAPPROVAL)
-                .time(LocalDateTime.now())
+                .time(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .changeType(ChangeType.AUTOMATIC)
                 .build();
         List<StatusHistoryJSON> statusHistoryJSONList = new ArrayList<>();
@@ -58,21 +63,25 @@ public class ApplicationService {
         return Application.builder()
                 .client(client)
                 .status(ApplicationStatus.PREAPPROVAL)
-                .creationDate(LocalDateTime.now())
+                .creationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
                 .statusHistory(statusHistory)
                 .build();
     }
 
+    @Override
     public List<LoanOfferDTO> getOffers(LoanApplicationRequestDTO request, long id) {
+        CustomLogger.logInfoClassAndMethod();
         List<LoanOfferDTO> offers = feignConveyor.getCreatedOffers(request);
         offers.forEach(o -> o.setApplicationId(id));
         return offers;
     }
 
+    @Override
     public CreditDTO getCreditDtoFromRemote(FinishRegistrationRequestDTO request, Application application) {
+        CustomLogger.logInfoClassAndMethod();
         Client client = application.getClient();
         LoanOfferDTO appliedOffer = application.getAppliedOffer();
-        return feignConveyor.getCredit(ScoringDataDTO.builder()
+        return feignConveyor.getCalculatedCredit(ScoringDataDTO.builder()
                 .amount(appliedOffer.getTotalAmount())
                 .term(appliedOffer.getTerm())
                 .isInsuranceEnabled(appliedOffer.getIsInsuranceEnabled())
@@ -91,19 +100,5 @@ public class ApplicationService {
                 .employment(request.getEmployment())
                 .account(request.getAccount())
                 .build());
-    }
-
-    public Credit mapCredit(CreditDTO creditDTO) {
-        return Credit.builder()
-                .amount(creditDTO.getAmount())
-                .term(creditDTO.getTerm())
-                .monthlyPayment(creditDTO.getMonthlyPayment())
-                .rate(creditDTO.getRate())
-                .psk(creditDTO.getPsk())
-                .paymentSchedule(creditDTO.getPaymentSchedule())
-                .insuranceEnabled(creditDTO.getIsInsuranceEnabled())
-                .salaryClient(creditDTO.getIsSalaryClient())
-                .creditStatus(CreditStatus.CALCULATED)
-                .build();
     }
 }
