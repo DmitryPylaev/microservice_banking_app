@@ -1,4 +1,4 @@
-package com.neoflex.java2023.model.relation;
+package com.neoflex.java2023.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
@@ -44,10 +44,10 @@ public class Credit {
     private List<PaymentScheduleElement> paymentSchedule;
 
     @Column(name = "insurance_enabled")
-    private Boolean insuranceEnabled;
+    private Boolean isInsuranceEnabled;
 
     @Column(name = "salary_client")
-    private Boolean salaryClient;
+    private Boolean isSalaryClient;
 
     @Column(name = "credit_status")
     @Enumerated(EnumType.STRING)

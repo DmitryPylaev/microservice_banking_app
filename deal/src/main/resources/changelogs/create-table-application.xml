@@ -27,8 +27,8 @@
                 </column>
                 <column name="ses_code" type="varchar(50)">
                 </column>
-                <column name="fk_status_history_id" type="bigint">
-                    <constraints foreignKeyName="fk_status_history_id" references="status_history(id)"  nullable="false"/>
+                <column name="status_history" type="jsonb">
+                    <constraints nullable="false"/>
                 </column>
             </createTable>
         </changeSet>

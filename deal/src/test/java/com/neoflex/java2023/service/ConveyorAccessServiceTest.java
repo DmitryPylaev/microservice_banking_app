@@ -1,16 +1,17 @@
 package com.neoflex.java2023.service;
 
-import com.neoflex.java2023.dto.*;
-import com.neoflex.java2023.enums.*;
-import com.neoflex.java2023.model.json.PassportJSON;
-import com.neoflex.java2023.model.json.StatusHistoryJSON;
-import com.neoflex.java2023.model.jsonb.Passport;
-import com.neoflex.java2023.model.jsonb.StatusHistory;
-import com.neoflex.java2023.model.relation.Application;
-import com.neoflex.java2023.model.relation.Client;
-import com.neoflex.java2023.service.abstraction.ApplicationService;
+import com.neoflex.java2023.dto.CreditDTO;
+import com.neoflex.java2023.dto.FinishRegistrationRequestDTO;
+import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
+import com.neoflex.java2023.dto.LoanOfferDTO;
+import com.neoflex.java2023.enums.ApplicationStatus;
+import com.neoflex.java2023.enums.ChangeType;
+import com.neoflex.java2023.model.Application;
+import com.neoflex.java2023.model.Client;
+import com.neoflex.java2023.model.Passport;
+import com.neoflex.java2023.model.StatusHistoryElement;
+import com.neoflex.java2023.service.abstraction.ConveyorAccessService;
 import com.neoflex.java2023.service.config.BaseTest;
-import com.neoflex.java2023.service.mapper.CreditMapper;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -34,14 +35,14 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {ApplicationServiceImpl.class})
+@SpringBootTest(classes = {ApplicationBuildServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 @EnableAutoConfiguration
-class ApplicationServiceTest extends BaseTest {
+class ConveyorAccessServiceTest extends BaseTest {
     @MockBean
     private FeignConveyor feignConveyor;
     @Autowired
-    private ApplicationService applicationService;
+    private ConveyorAccessService conveyorAccessService;
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(300000);
     private static final Integer TERM = 18;
     private static final BigDecimal MONTHLY_PAYMENT = BigDecimal.valueOf(24970);
@@ -56,11 +57,10 @@ class ApplicationServiceTest extends BaseTest {
             .passportSeries("5766")
             .passportNumber("576687")
             .build();
-    private static final Passport passport = new Passport(PassportJSON.builder()
+    private static final Passport passport = Passport.builder()
             .series(request.getPassportSeries())
             .number(request.getPassportNumber())
-            .build());
-
+            .build();
     private static final Client client = Client.builder()
             .lastName(request.getLastName())
             .firstName(request.getFirstName())
@@ -69,12 +69,10 @@ class ApplicationServiceTest extends BaseTest {
             .email(request.getEmail())
             .passport(passport)
             .build();
-
-    private static final StatusHistoryJSON statusHistoryJSON = StatusHistoryJSON.builder()
+    private static final StatusHistoryElement STATUS_HISTORY = StatusHistoryElement.builder()
             .status(ApplicationStatus.PREAPPROVAL)
             .time(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
             .changeType(ChangeType.AUTOMATIC).build();
-
     private static final Application application = Application.builder()
             .client(client)
             .status(ApplicationStatus.PREAPPROVAL)
@@ -83,20 +81,9 @@ class ApplicationServiceTest extends BaseTest {
 
     @BeforeAll
     static void prepareApplicationInstance() {
-        List<StatusHistoryJSON> statusHistoryJSONList = new ArrayList<>();
-        statusHistoryJSONList.add(statusHistoryJSON);
-        StatusHistory statusHistory = new StatusHistory(statusHistoryJSONList);
-        application.setStatusHistory(statusHistory);
-    }
-
-    @Test
-    void createClient() {
-        assertEquals(client, applicationService.createClient(request));
-    }
-
-    @Test
-    void createApplication() {
-        assertEquals(application, applicationService.createApplication(client));
+        List<StatusHistoryElement> statusHistoryElement = new ArrayList<>();
+        statusHistoryElement.add(STATUS_HISTORY);
+        application.setStatusHistoryElement(statusHistoryElement);
     }
 
     @Test
@@ -107,8 +94,8 @@ class ApplicationServiceTest extends BaseTest {
         expectedList.add(expectedDto);
 
         when(feignConveyor.getCreatedOffers(any())).thenReturn(expectedList);
-        assertDoesNotThrow(() -> applicationService.getOffers(request, 1L));
-        assertEquals(1L, applicationService.getOffers(request, 1L).get(0).getApplicationId());
+        assertDoesNotThrow(() -> conveyorAccessService.getOffers(request, 1L));
+        assertEquals(1L, conveyorAccessService.getOffers(request, 1L).get(0).getApplicationId());
         verify(feignConveyor, Mockito.times(2)).getCreatedOffers(any());
     }
 
@@ -134,17 +121,12 @@ class ApplicationServiceTest extends BaseTest {
 
         AtomicReference<CreditDTO> creditDTO = new AtomicReference<>();
 
-        assertDoesNotThrow(() -> creditDTO.set(applicationService.getCreditDtoFromRemote(FinishRegistrationRequestDTO.builder().build(), application)));
+        assertDoesNotThrow(() -> creditDTO.set(conveyorAccessService.getCreditDtoFromRemote(FinishRegistrationRequestDTO.builder().build(), application)));
         assertEquals(AMOUNT, creditDTO.get().getAmount());
         assertEquals(TERM, creditDTO.get().getTerm());
         assertEquals(MONTHLY_PAYMENT, creditDTO.get().getMonthlyPayment());
         assertEquals(RATE, creditDTO.get().getRate());
         assertEquals(PSK, creditDTO.get().getPsk());
         verify(feignConveyor, Mockito.times(1)).getCalculatedCredit(any());
-    }
-
-    @Test
-    void mapCredit() {
-        assertEquals(CreditStatus.CALCULATED, CreditMapper.mapCredit(CreditDTO.builder().build()).getCreditStatus());
     }
 }

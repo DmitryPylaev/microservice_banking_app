@@ -30,11 +30,10 @@
                 <column name="dependent_amount" type="int">
                     <constraints checkConstraint="dependent_amount>-1"/>
                 </column>
-                <column name="fk_passport_id" type="bigint">
-                    <constraints foreignKeyName="fk_passport_id" references="passport(id)" nullable="false"/>
+                <column name="passport" type="jsonb">
+                    <constraints nullable="false"/>
                 </column>
-                <column name="fk_employment_id" type="bigint">
-                    <constraints foreignKeyName="fk_employment_id" references="employment(id)"/>
+                <column name="employment" type="jsonb">
                 </column>
                 <column name="account" type="varchar(50)">
                     <constraints  unique="true"/>

@@ -1,17 +1,10 @@
 package com.neoflex.java2023.service.mapper;
 
 import com.neoflex.java2023.dto.EmploymentDTO;
-import com.neoflex.java2023.model.json.EmploymentJSON;
+import com.neoflex.java2023.model.Employment;
+import org.mapstruct.Mapper;
 
-public class EmploymentMapper {
-    public static EmploymentJSON mapEmploymentJSON(EmploymentDTO employmentDTO) {
-        return EmploymentJSON.builder()
-                .employmentStatus(employmentDTO.getEmploymentStatus())
-                .employerInn(employmentDTO.getEmployerINN())
-                .salary(employmentDTO.getSalary())
-                .position(employmentDTO.getPosition())
-                .workExperienceTotal(employmentDTO.getWorkExperienceTotal())
-                .workExperienceCurrent(employmentDTO.getWorkExperienceCurrent())
-                .build();
-    }
+@Mapper(componentModel = "spring")
+public interface EmploymentMapper {
+    Employment mapEmploymentJSON(EmploymentDTO employmentDTO);
 }

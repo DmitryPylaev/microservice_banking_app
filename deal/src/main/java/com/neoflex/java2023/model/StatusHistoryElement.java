@@ -1,26 +1,25 @@
-package com.neoflex.java2023.model.json;
+package com.neoflex.java2023.model;
 
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
 import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.neoflex.java2023.enums.ApplicationStatus;
+import com.neoflex.java2023.enums.ChangeType;
+import lombok.*;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class PassportJSON implements Serializable {
-    private String series;
-    private String number;
-    private String issueBranch;
+public class StatusHistoryElement implements Serializable {
+    private ApplicationStatus status;
     @JsonSerialize(using = LocalDateTimeSerializer.class)
     @JsonDeserialize(using = LocalDateTimeDeserializer.class)
-    private LocalDate issueDate;
+    @EqualsAndHashCode.Exclude
+    private LocalDateTime time;
+    private ChangeType changeType;
 }

@@ -5,16 +5,14 @@ import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
 import com.neoflex.java2023.enums.EmploymentPosition;
 import com.neoflex.java2023.enums.EmploymentStatus;
-import com.neoflex.java2023.model.json.PassportJSON;
-import com.neoflex.java2023.model.json.StatusHistoryJSON;
-import com.neoflex.java2023.model.jsonb.Passport;
-import com.neoflex.java2023.model.jsonb.StatusHistory;
-import com.neoflex.java2023.model.relation.Application;
-import com.neoflex.java2023.model.relation.Client;
+import com.neoflex.java2023.model.Application;
+import com.neoflex.java2023.model.Client;
+import com.neoflex.java2023.model.Passport;
+import com.neoflex.java2023.model.StatusHistoryElement;
 import com.neoflex.java2023.repository.ApplicationRepository;
 import com.neoflex.java2023.repository.ClientRepository;
-import com.neoflex.java2023.repository.CreditRepository;
-import com.neoflex.java2023.service.abstraction.ApplicationService;
+import com.neoflex.java2023.service.abstraction.ApplicationBuildService;
+import com.neoflex.java2023.service.abstraction.ConveyorAccessService;
 import com.neoflex.java2023.service.abstraction.DealService;
 import com.neoflex.java2023.service.config.BaseTest;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,31 +32,27 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest(classes = {DealServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 @EnableAutoConfiguration
-@SuppressWarnings("unused")
 class DealServiceTest extends BaseTest {
     @MockBean
-    private ApplicationService applicationService;
-
+    private ApplicationBuildService applicationBuildService;
+    @MockBean
+    private ConveyorAccessService conveyorAccessService;
     @MockBean
     private ClientRepository clientRepository;
-
-    @MockBean
-    private CreditRepository creditRepository;
-
     @MockBean
     private ApplicationRepository applicationRepository;
-
     @Autowired
     private DealService dealService;
-
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(300000);
     private static final Integer TERM = 18;
     private static final BigDecimal MONTHLY_PAYMENT = BigDecimal.valueOf(24970);
@@ -73,10 +67,10 @@ class DealServiceTest extends BaseTest {
             .passportSeries("5766")
             .passportNumber("576687")
             .build();
-    private static final Passport passport = new Passport(PassportJSON.builder()
+    private static final Passport passport = Passport.builder()
             .series(request.getPassportSeries())
             .number(request.getPassportNumber())
-            .build());
+            .build();
 
     private static final Client client = Client.builder()
             .lastName(request.getLastName())
@@ -87,7 +81,7 @@ class DealServiceTest extends BaseTest {
             .passport(passport)
             .build();
 
-    private static final StatusHistoryJSON statusHistoryJSON = StatusHistoryJSON.builder().status(ApplicationStatus.PREAPPROVAL).time(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).changeType(ChangeType.AUTOMATIC).build();
+    private static final StatusHistoryElement STATUS_HISTORY = StatusHistoryElement.builder().status(ApplicationStatus.PREAPPROVAL).time(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS)).changeType(ChangeType.AUTOMATIC).build();
 
     private static final Application application = Application.builder()
             .client(client)
@@ -113,10 +107,9 @@ class DealServiceTest extends BaseTest {
 
     @BeforeAll
     static void prepareApplicationInstance() {
-        List<StatusHistoryJSON> statusHistoryJSONList = new ArrayList<>();
-        statusHistoryJSONList.add(statusHistoryJSON);
-        StatusHistory statusHistory = new StatusHistory(statusHistoryJSONList);
-        application.setStatusHistory(statusHistory);
+        List<StatusHistoryElement> statusHistoryElement = new ArrayList<>();
+        statusHistoryElement.add(STATUS_HISTORY);
+        application.setStatusHistoryElement(statusHistoryElement);
     }
 
     @Test
@@ -127,7 +120,7 @@ class DealServiceTest extends BaseTest {
 
         when(clientRepository.save(any())).thenReturn(client);
         when(applicationRepository.save(any())).thenReturn(application);
-        when(applicationService.getOffers(any(LoanApplicationRequestDTO.class), anyLong())).thenReturn(expectedList);
+        when(conveyorAccessService.getOffers(any(LoanApplicationRequestDTO.class), anyLong())).thenReturn(expectedList);
 
         assertDoesNotThrow(() -> dealService.acceptRequest(request));
         LoanOfferDTO result = dealService.acceptRequest(request).get(0);
@@ -137,9 +130,9 @@ class DealServiceTest extends BaseTest {
         assertEquals(TERM, result.getTerm());
         assertEquals(RATE, result.getRate());
         assertEquals(MONTHLY_PAYMENT, result.getMonthlyPayment());
-        verify(applicationService, Mockito.times(2)).createClient(any());
-        verify(applicationService, Mockito.times(2)).createApplication(any());
-        verify(applicationService, Mockito.times(2)).getOffers(any(LoanApplicationRequestDTO.class), anyLong());
+        verify(applicationBuildService, Mockito.times(2)).createClient(any());
+        verify(applicationBuildService, Mockito.times(2)).createApplication(any());
+        verify(conveyorAccessService, Mockito.times(2)).getOffers(any(LoanApplicationRequestDTO.class), anyLong());
     }
 
     @Test
@@ -165,13 +158,16 @@ class DealServiceTest extends BaseTest {
                 .monthlyPayment(MONTHLY_PAYMENT)
                 .rate(RATE)
                 .psk(PSK)
+                .paymentSchedule(new ArrayList<>())
+                .isInsuranceEnabled(true)
+                .isSalaryClient(true)
                 .build();
 
         FinishRegistrationRequestDTO request = FinishRegistrationRequestDTO.builder()
                 .employment(employmentDTO)
                 .build();
 
-        when(applicationService.getCreditDtoFromRemote(any(FinishRegistrationRequestDTO.class), any(Application.class))).thenReturn(expectedCreditDTO);
+        when(conveyorAccessService.getCreditDtoFromRemote(any(FinishRegistrationRequestDTO.class), any(Application.class))).thenReturn(expectedCreditDTO);
 
         when(applicationRepository.findById(anyLong())).thenReturn(Optional.of(application));
         assertEquals(expectedCreditDTO, dealService.finishCalculateCredit(request, 1L));

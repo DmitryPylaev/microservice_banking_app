@@ -17,7 +17,7 @@ import java.math.BigDecimal;
 @Schema(description = "Информация о занятости клиента")
 public class EmploymentDTO {
     private EmploymentStatus employmentStatus;
-    private String employerINN;
+    private String employerInn;
     private BigDecimal salary;
     private EmploymentPosition position;
     private Integer workExperienceTotal;

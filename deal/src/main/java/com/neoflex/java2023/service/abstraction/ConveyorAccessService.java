@@ -4,16 +4,11 @@ import com.neoflex.java2023.dto.CreditDTO;
 import com.neoflex.java2023.dto.FinishRegistrationRequestDTO;
 import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
 import com.neoflex.java2023.dto.LoanOfferDTO;
-import com.neoflex.java2023.model.relation.Application;
-import com.neoflex.java2023.model.relation.Client;
+import com.neoflex.java2023.model.Application;
 
 import java.util.List;
 
-public interface ApplicationService {
-    Client createClient(LoanApplicationRequestDTO request);
-
-    Application createApplication(Client client);
-
+public interface ConveyorAccessService {
     List<LoanOfferDTO> getOffers(LoanApplicationRequestDTO request, long id);
 
     CreditDTO getCreditDtoFromRemote(FinishRegistrationRequestDTO request, Application application);

@@ -1,15 +1,15 @@
-package com.neoflex.java2023.model.relation;
+package com.neoflex.java2023.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java2023.dto.LoanOfferDTO;
 import com.neoflex.java2023.enums.ApplicationStatus;
-import com.neoflex.java2023.model.jsonb.StatusHistory;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Table(name = "application")
@@ -50,8 +50,8 @@ public class Application {
     @Column(name = "ses_code")
     private String sesCode;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_status_history_id")
-    private StatusHistory statusHistory;
+    @Column(name = "status_history")
+    @JdbcTypeCode(SqlTypes.JSON)
+    private List<StatusHistoryElement> statusHistoryElement;
 
 }

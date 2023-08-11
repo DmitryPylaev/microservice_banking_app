@@ -1,14 +1,12 @@
-package com.neoflex.java2023.model.relation;
+package com.neoflex.java2023.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java2023.enums.Gender;
 import com.neoflex.java2023.enums.MaritalStatus;
-import com.neoflex.java2023.model.jsonb.Employment;
-import com.neoflex.java2023.model.jsonb.Passport;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
 
 import java.time.LocalDate;
 
@@ -51,14 +49,12 @@ public class Client {
     @Column(name = "dependent_amount")
     private Integer dependentAmount;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_passport_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "passport")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Passport passport;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fk_employment_id")
-    @OnDelete(action = OnDeleteAction.CASCADE)
+    @Column(name = "employment")
+    @JdbcTypeCode(SqlTypes.JSON)
     private Employment employment;
 
     @Column(name = "account")
