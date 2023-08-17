@@ -1,0 +1,27 @@
+version: '1'
+
+services:
+  app:
+    image: 'bank-docker-spring-boot-postgres:latest'
+    build:
+      context: ..
+    container_name: banking_app
+    depends_on:
+      - db
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/db
+      - SPRING_DATASOURCE_USERNAME=postgres
+      - SPRING_DATASOURCE_PASSWORD=12345
+      - SPRING_JPA_HIBERNATE_DDL_AUTO=update
+
+  db:
+    image: 'postgres:13.1-alpine'
+    container_name: db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=12345
+      - POSTGRES_DB=bank_db
+    ports:
+      - "5432:5432"

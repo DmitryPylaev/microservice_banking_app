@@ -12,6 +12,6 @@ public class SwaggerConfig {
     @Bean
     public OpenAPI openAPI() {
         return new OpenAPI()
-                .info(new Info().description("Neoflex 2023. Прототип банка. Микросервис 'Кредитный конвейр'").version("v0.1"));
+                .info(new Info().description("Neoflex 2023. Прототип банка. Микросервис 'Сделка'").version("v0.1"));
     }
 }

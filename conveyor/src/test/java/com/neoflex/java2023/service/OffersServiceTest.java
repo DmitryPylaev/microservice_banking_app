@@ -1,9 +1,11 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
-import com.neoflex.java2023.dto.enums.EmploymentStatus;
-import com.neoflex.java2023.dto.enums.MaritalStatus;
-import com.neoflex.java2023.dto.enums.Position;
+import com.neoflex.java2023.enums.EmploymentPosition;
+import com.neoflex.java2023.enums.EmploymentStatus;
+import com.neoflex.java2023.enums.MaritalStatus;
+import com.neoflex.java2023.service.abstraction.OffersService;
+import com.neoflex.java2023.service.abstraction.ScoringService;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -84,10 +86,10 @@ class OffersServiceTest {
 
         Assertions.assertDoesNotThrow(() -> offersService.createPrescoringOffers(dto));
 
-        assertEquals(amountWithInsurance, result.get(0).getTotalAmount());
-        assertEquals(amountWithInsurance, result.get(1).getTotalAmount());
-        assertEquals(amount, result.get(2).getTotalAmount());
-        assertEquals(amount, result.get(3).getTotalAmount());
+        assertEquals(amountWithInsurance, result.get(3).getTotalAmount());
+        assertEquals(amountWithInsurance, result.get(2).getTotalAmount());
+        assertEquals(amount, result.get(1).getTotalAmount());
+        assertEquals(amount, result.get(0).getTotalAmount());
 
     }
 
@@ -102,7 +104,7 @@ class OffersServiceTest {
         EmploymentDTO employmentDTO = EmploymentDTO.builder()
                 .employmentStatus(EmploymentStatus.EMPLOYED)
                 .salary(BigDecimal.valueOf(100000))
-                .position(Position.JUNIOR)
+                .position(EmploymentPosition.WORKER)
                 .workExperienceTotal(120)
                 .workExperienceCurrent(120)
                 .build();

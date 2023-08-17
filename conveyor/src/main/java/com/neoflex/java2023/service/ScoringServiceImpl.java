@@ -3,7 +3,9 @@ package com.neoflex.java2023.service;
 import com.neoflex.java2023.dto.EmploymentDTO;
 import com.neoflex.java2023.dto.PaymentScheduleElement;
 import com.neoflex.java2023.dto.ScoringDataDTO;
-import com.neoflex.java2023.dto.enums.EmploymentStatus;
+import com.neoflex.java2023.enums.EmploymentStatus;
+import com.neoflex.java2023.service.abstraction.ScoringService;
+import com.neoflex.java2023.util.CustomLogger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -71,13 +73,13 @@ public class ScoringServiceImpl implements ScoringService {
 
     @Override
     public BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         return (isInsuranceEnabled) ? amount.subtract(BigDecimal.valueOf(insurancePrice)) : amount;
     }
 
     @Override
     public BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal rate = BigDecimal.valueOf(baseRate);
         if (isInsuranceEnabled) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
         if (isSalaryClient) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
@@ -86,7 +88,7 @@ public class ScoringServiceImpl implements ScoringService {
 
     @Override
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), BIGDECIMAL_PRECISION);
         BigDecimal percent = monthRate.add(BigDecimal.ONE).pow(term);
         BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), BIGDECIMAL_PRECISION));
@@ -95,7 +97,7 @@ public class ScoringServiceImpl implements ScoringService {
 
     @Override
     public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
         overpayment = (isInsuranceEnabled) ? overpayment.add(BigDecimal.valueOf(insurancePrice)) : overpayment;
         BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(MONTH_OF_YEAR), BIGDECIMAL_PRECISION);
@@ -107,7 +109,7 @@ public class ScoringServiceImpl implements ScoringService {
 
     @Override
     public List<PaymentScheduleElement> paymentScheduleBuild(BigDecimal amount, Integer term, BigDecimal rate, BigDecimal monthlyPayment) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         List<PaymentScheduleElement> paymentSchedule = new ArrayList<>();
         for (int i = 0; i < term; i++) {
             BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), BIGDECIMAL_PRECISION);
@@ -129,7 +131,7 @@ public class ScoringServiceImpl implements ScoringService {
 
     @Override
     public BigDecimal calculateScoringRate(ScoringDataDTO scoringDataDTO) {
-        log.info("В методе сервиса скоринга: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal rate = BigDecimal.valueOf(baseRate);
         EmploymentDTO employmentDTO = scoringDataDTO.getEmployment();
         try {
@@ -150,13 +152,14 @@ public class ScoringServiceImpl implements ScoringService {
         }
 
         log.info("Отказа не произошло");
-        if (scoringDataDTO.getDependentAmount() > 1) rate = rate.subtract(BigDecimal.valueOf(dependentAmountRateDiscount));
+        if (scoringDataDTO.getDependentAmount() > 1)
+            rate = rate.subtract(BigDecimal.valueOf(dependentAmountRateDiscount));
         if (scoringDataDTO.getIsInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
         if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
 
         switch (employmentDTO.getPosition()) {
-            case MIDDLE -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
-            case SENIOR -> rate = rate.subtract(BigDecimal.valueOf(seniorRateDiscount));
+            case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
+            case TOP_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(seniorRateDiscount));
         }
         switch (scoringDataDTO.getMaritalStatus()) {
             case SINGLE -> rate = rate.subtract(BigDecimal.valueOf(singleRateDiscount));

@@ -8,5 +8,24 @@
     </parent>
     <artifactId>conveyor</artifactId>
     <name>conveyor</name>
+    <dependencies>
+        <dependency>
+            <groupId>com.neoflex.2023</groupId>
+            <artifactId>banking-utils</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+    </dependencies>
 
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.neoflex.java2023.app.ConveyorApplication</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>

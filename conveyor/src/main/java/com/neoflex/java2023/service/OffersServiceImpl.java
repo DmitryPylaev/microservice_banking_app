@@ -1,6 +1,9 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
+import com.neoflex.java2023.service.abstraction.OffersService;
+import com.neoflex.java2023.service.abstraction.ScoringService;
+import com.neoflex.java2023.util.CustomLogger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -28,20 +31,19 @@ public class OffersServiceImpl implements OffersService {
 
     @Override
     public List<LoanOfferDTO> createPrescoringOffers(LoanApplicationRequestDTO request) {
-        log.info("В методе сервиса подготовки предложений: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         return Stream.of(
                 createPrescoringOffer(true, true, request),
                 createPrescoringOffer(true, false, request),
                 createPrescoringOffer(false, true, request),
                 createPrescoringOffer(false, false, request)
-        ).sorted(Comparator.comparing(LoanOfferDTO::getRate)).toList();
+        ).sorted(Comparator.comparing(LoanOfferDTO::getRate).reversed()).toList();
     }
 
     private LoanOfferDTO createPrescoringOffer(Boolean isInsuranceEnabled,
                                                Boolean isSalaryClient,
                                                LoanApplicationRequestDTO request) {
-
-        log.info("В методе сервиса подготовки предложений OffersService::createPrescoringOffer");
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal amount = request.getAmount();
         Integer term = request.getTerm();
 
@@ -62,7 +64,7 @@ public class OffersServiceImpl implements OffersService {
 
     @Override
     public CreditDTO createCreditOffer(ScoringDataDTO scoringDataDTO) {
-        log.info("В методе сервиса подготовки предложений: " + new Exception().getStackTrace()[1].getMethodName());
+        CustomLogger.logInfoClassAndMethod();
         BigDecimal amount = scoringDataDTO.getAmount();
         Integer term = scoringDataDTO.getTerm();
         Boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();

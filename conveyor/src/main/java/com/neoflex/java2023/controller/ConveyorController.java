@@ -4,7 +4,8 @@ import com.neoflex.java2023.dto.CreditDTO;
 import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
 import com.neoflex.java2023.dto.LoanOfferDTO;
 import com.neoflex.java2023.dto.ScoringDataDTO;
-import com.neoflex.java2023.service.OffersService;
+import com.neoflex.java2023.service.abstraction.OffersService;
+import com.neoflex.java2023.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
@@ -32,16 +33,16 @@ public class ConveyorController {
     @Operation(summary = "Расчёт возможных условий кредита")
     @PostMapping(value = "/offers", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<LoanOfferDTO> createOffers(@RequestBody LoanApplicationRequestDTO request) {
-        log.info("В методе контроллера: " + new Exception().getStackTrace()[1].getMethodName());
-        log.info("Запрос: " + request);
+        CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(request);
         return offersService.createPrescoringOffers(request);
     }
 
     @Operation(summary = "Валидация присланных данных + скоринг данных + полный расчет параметров кредита")
     @PostMapping(value = "/calculation", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public CreditDTO calculateCredit(@RequestBody ScoringDataDTO request) {
-        log.info("В методе контроллера: " + new Exception().getStackTrace()[1].getMethodName());
-        log.info("Запрос: " + request);
+        CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(request);
         return offersService.createCreditOffer(request);
     }
 }
