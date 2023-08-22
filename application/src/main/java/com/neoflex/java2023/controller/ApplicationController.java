@@ -28,7 +28,7 @@ public class ApplicationController {
     @Operation(summary = "Прескоринг + Расчёт возможных условий кредита")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseBody
-    public List<LoanOfferDTO> createOffers(@RequestBody LoanApplicationRequestDTO request) {
+    public List<LoanOfferDTO> getOffers(@RequestBody LoanApplicationRequestDTO request) {
         CustomLogger.logInfoClassAndMethod();
         CustomLogger.logInfoRequest(request);
         return prescoringService.getPreparedOffers(request);
