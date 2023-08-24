@@ -6,7 +6,6 @@ import com.neoflex.java2023.service.abstraction.PrescoringService;
 import com.neoflex.java2023.service.abstraction.ValidateService;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -27,12 +26,12 @@ public class PrescoringServiceImpl implements PrescoringService {
     }
 
     @Override
-    public ResponseEntity<String> executeSpecifyApplicationRequest(LoanOfferDTO request) {
+    public void executeSpecifyApplicationRequest(LoanOfferDTO request) {
         try {
             feignDeal.specifyApplication(request);
-            return ResponseEntity.ok("Заявка обработана");
+            log.info("Заявка обработана");
         } catch (Exception e) {
-            return ResponseEntity.badRequest().body("Ошибка сети " + e.getMessage());
+            log.info("Ошибка сети " + e.getMessage());
         }
     }
 }

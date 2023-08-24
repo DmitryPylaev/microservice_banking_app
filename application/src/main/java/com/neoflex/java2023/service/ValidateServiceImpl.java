@@ -42,15 +42,15 @@ public class ValidateServiceImpl implements ValidateService {
     public boolean validatePrescoringRequest(LoanApplicationRequestDTO request) {
         try {
             if (request.getFirstName().length() > nameLengthMax || request.getFirstName().length() < nameLengthMin)
-                throw new RuntimeException("Имя неверной длинны");
+                throw new RuntimeException("Имя не правильной длины");
             if (request.getLastName().length() > nameLengthMax || request.getLastName().length() < nameLengthMin)
-                throw new RuntimeException("Фамилия неверной длинны");
-            if (request.getTerm() < minTerm) throw new RuntimeException("Неверный срок");
+                throw new RuntimeException("Фамилия не правильной длины");
+            if (request.getTerm() < minTerm) throw new RuntimeException("Неправильный срок");
             long resultYears = ChronoUnit.YEARS.between(request.getBirthdate(), LocalDate.now());
             if (resultYears < minAge) throw new RuntimeException("Нет 18 лет");
-            validateRegexMatch(request.getEmail(), emailPattern, new RuntimeException("Не правильный email"));
-            validateRegexMatch(request.getPassportSeries(), passportSeriesPattern, new RuntimeException("Не правильная серия паспорта"));
-            validateRegexMatch(request.getPassportNumber(), passportNumberPattern, new RuntimeException("Не правильный номер паспорта"));
+            validateRegexMatch(request.getEmail(), emailPattern, new RuntimeException("Неправильный email"));
+            validateRegexMatch(request.getPassportSeries(), passportSeriesPattern, new RuntimeException("Неправильная серия паспорта"));
+            validateRegexMatch(request.getPassportNumber(), passportNumberPattern, new RuntimeException("Неправильный номер паспорта"));
             log.info("Заявка на прескоринг валидна");
             return true;
         } catch (RuntimeException e) {

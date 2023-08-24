@@ -9,16 +9,15 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.boot.test.system.CapturedOutput;
 import org.springframework.boot.test.system.OutputCaptureExtension;
 import org.springframework.context.annotation.ComponentScan;
-import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
@@ -57,13 +56,15 @@ class PrescoringServiceTest {
     }
 
     @Test
-    void executeSpecifyApplicationRequest() {
+    void executeSpecifyApplicationRequest(CapturedOutput output) {
         LoanOfferDTO dto = LoanOfferDTO.builder().build();
 
-        assertEquals(prescoringService.executeSpecifyApplicationRequest(dto), ResponseEntity.ok("Заявка обработана"));
+        prescoringService.executeSpecifyApplicationRequest(dto);
+        assertTrue(output.getOut().contains("Заявка обработана"));
 
         assertThrows(Exception.class, () -> doThrow(new Exception()).when(feignDeal).specifyApplication(any()));
-        assertEquals(prescoringService.executeSpecifyApplicationRequest(dto), ResponseEntity.badRequest().body("""
+        prescoringService.executeSpecifyApplicationRequest(dto);
+        assertTrue(output.getOut().contains("""
                 Ошибка сети\s
                 Checked exception is invalid for this method!
                 Invalid: java.lang.Exception"""));

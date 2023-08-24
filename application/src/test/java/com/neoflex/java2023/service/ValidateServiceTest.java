@@ -42,7 +42,7 @@ class ValidateServiceTest {
     void validateFirstNameFail(CapturedOutput output) {
         dto.setFirstName("V");
         assertFalse(validateService.validatePrescoringRequest(dto));
-        assertTrue(output.getOut().contains("Имя неверной длинны"));
+        assertTrue(output.getOut().contains("Имя не правильной длины"));
         dto.setFirstName("Vasiliy");
     }
 
@@ -58,7 +58,7 @@ class ValidateServiceTest {
     void validateEmail(CapturedOutput output) {
         dto.setEmail("v@gmail.com");
         assertFalse(validateService.validatePrescoringRequest(dto));
-        assertTrue(output.getOut().contains("Не правильный email"));
+        assertTrue(output.getOut().contains("Неправильный email"));
         dto.setEmail("vas@gmail.com");
     }
 
@@ -66,7 +66,7 @@ class ValidateServiceTest {
     void validatePassportSeries(CapturedOutput output) {
         dto.setPassportSeries("5767676");
         assertFalse(validateService.validatePrescoringRequest(dto));
-        assertTrue(output.getOut().contains("Не правильная серия паспорта"));
+        assertTrue(output.getOut().contains("Неправильная серия паспорта"));
         dto.setPassportSeries("5766");
     }
 }
