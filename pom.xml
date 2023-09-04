@@ -13,9 +13,10 @@
   <name>neoflex-project</name>
   <url>http://maven.apache.org</url>
   <modules>
+    <module>banking-utils</module>
     <module>conveyor</module>
     <module>deal</module>
-    <module>banking-utils</module>
+    <module>application</module>
   </modules>
 
   <properties>

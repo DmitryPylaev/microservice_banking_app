@@ -1,0 +1,42 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>com.neoflex.2023</groupId>
+        <artifactId>neoflex-project</artifactId>
+        <version>${revision}${changelist}</version>
+    </parent>
+    <artifactId>application</artifactId>
+    <name>application</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.neoflex.2023</groupId>
+            <artifactId>banking-utils</artifactId>
+            <version>${revision}${changelist}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-openfeign</artifactId>
+            <version>${openfeign.version}</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <openfeign.version>4.0.4</openfeign.version>
+    </properties>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>com.neoflex.java2023.app.ApplicationApp</mainClass>
+                    <layout>JAR</layout>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -4,3 +4,4 @@ Java, SpringBoot, PostgreSQL, JPA, Swagger, Kafka, JUnit, Lombok.
 
 Микросервис conveyor - реализация кредитного конвейра.
 Микросервис deal - работа с БД, запросы к КК.
+Микросервис application - работа с заявками на прескоринг.

@@ -20,7 +20,7 @@ import java.util.List;
 @JsonIgnoreProperties(value = {"handler", "hibernateLazyInitializer", "FieldHandler"})
 public class Application {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "application_id_seq")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Exclude
     private long id;
 
