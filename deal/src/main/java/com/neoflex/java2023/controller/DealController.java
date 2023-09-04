@@ -24,7 +24,7 @@ import java.util.List;
 @AllArgsConstructor
 @Log4j2
 @SuppressWarnings("unused")
-@Tag(name = "ConveyorController", description = "Контроллер микросервиса сделки")
+@Tag(name = "DealController", description = "Контроллер микросервиса сделки")
 public class DealController {
     private DealService dealService;
 

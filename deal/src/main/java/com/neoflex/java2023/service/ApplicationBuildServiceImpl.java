@@ -54,7 +54,7 @@ public class ApplicationBuildServiceImpl implements ApplicationBuildService {
                 .client(client)
                 .status(ApplicationStatus.PREAPPROVAL)
                 .creationDate(LocalDateTime.now().truncatedTo(ChronoUnit.SECONDS))
-                .statusHistoryElement(statusHistory)
+                .statusHistory(statusHistory)
                 .build();
     }
 }
