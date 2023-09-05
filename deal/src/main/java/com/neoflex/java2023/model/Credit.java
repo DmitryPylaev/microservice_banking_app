@@ -41,6 +41,7 @@ public class Credit {
 
     @Column(name = "payment_schedule")
     @JdbcTypeCode(SqlTypes.JSON)
+    @ToString.Exclude
     private List<PaymentScheduleElement> paymentSchedule;
 
     @Column(name = "insurance_enabled")

@@ -12,7 +12,6 @@ import com.neoflex.java2023.service.config.BaseTest;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.ComponentScan;
 
@@ -27,7 +26,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {ApplicationBuildServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
-@EnableAutoConfiguration
 class ApplicationBuildServiceTest extends BaseTest {
     @Autowired
     private ApplicationBuildService applicationBuildService;
@@ -68,7 +66,7 @@ class ApplicationBuildServiceTest extends BaseTest {
     static void prepareApplicationInstance() {
         List<StatusHistoryElement> statusHistoryElement = new ArrayList<>();
         statusHistoryElement.add(ApplicationBuildServiceTest.statusHistoryElement);
-        application.setStatusHistoryElement(statusHistoryElement);
+        application.setStatusHistory(statusHistoryElement);
     }
 
     @Test
