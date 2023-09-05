@@ -14,7 +14,10 @@ import com.neoflex.java2023.repository.ClientRepository;
 import com.neoflex.java2023.service.abstraction.ApplicationBuildService;
 import com.neoflex.java2023.service.abstraction.ConveyorAccessService;
 import com.neoflex.java2023.service.abstraction.DealService;
+import com.neoflex.java2023.service.abstraction.KafkaService;
 import com.neoflex.java2023.service.config.BaseTest;
+import com.neoflex.java2023.service.kafkaConfig.KafkaProducerConfig;
+import com.neoflex.java2023.service.kafkaConfig.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -42,11 +45,18 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {DealServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 @EnableAutoConfiguration
+@SuppressWarnings("unused")
 class DealServiceTest extends BaseTest {
     @MockBean
     private ApplicationBuildService applicationBuildService;
     @MockBean
     private ConveyorAccessService conveyorAccessService;
+    @MockBean
+    private KafkaService kafkaService;
+    @MockBean
+    private KafkaTopicConfig kafkaTopicConfig;
+    @MockBean
+    KafkaProducerConfig kafkaProducerConfig;
     @MockBean
     private ClientRepository clientRepository;
     @MockBean
@@ -109,7 +119,7 @@ class DealServiceTest extends BaseTest {
     static void prepareApplicationInstance() {
         List<StatusHistoryElement> statusHistoryElement = new ArrayList<>();
         statusHistoryElement.add(STATUS_HISTORY);
-        application.setStatusHistoryElement(statusHistoryElement);
+        application.setStatusHistory(statusHistoryElement);
     }
 
     @Test

@@ -52,6 +52,6 @@ public class Application {
 
     @Column(name = "status_history")
     @JdbcTypeCode(SqlTypes.JSON)
-    private List<StatusHistoryElement> statusHistoryElement;
+    private List<StatusHistoryElement> statusHistory;
 
 }

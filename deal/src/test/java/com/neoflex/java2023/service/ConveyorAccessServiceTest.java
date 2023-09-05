@@ -11,7 +11,10 @@ import com.neoflex.java2023.model.Client;
 import com.neoflex.java2023.model.Passport;
 import com.neoflex.java2023.model.StatusHistoryElement;
 import com.neoflex.java2023.service.abstraction.ConveyorAccessService;
+import com.neoflex.java2023.service.abstraction.KafkaService;
 import com.neoflex.java2023.service.config.BaseTest;
+import com.neoflex.java2023.service.kafkaConfig.KafkaProducerConfig;
+import com.neoflex.java2023.service.kafkaConfig.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,9 +41,16 @@ import static org.mockito.Mockito.when;
 @SpringBootTest(classes = {ApplicationBuildServiceImpl.class})
 @ComponentScan("com.neoflex.java2023")
 @EnableAutoConfiguration
+@SuppressWarnings("unused")
 class ConveyorAccessServiceTest extends BaseTest {
     @MockBean
     private FeignConveyor feignConveyor;
+    @MockBean
+    private KafkaService kafkaService;
+    @MockBean
+    private KafkaTopicConfig kafkaTopicConfig;
+    @MockBean
+    KafkaProducerConfig kafkaProducerConfig;
     @Autowired
     private ConveyorAccessService conveyorAccessService;
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(300000);
@@ -83,7 +93,7 @@ class ConveyorAccessServiceTest extends BaseTest {
     static void prepareApplicationInstance() {
         List<StatusHistoryElement> statusHistoryElement = new ArrayList<>();
         statusHistoryElement.add(STATUS_HISTORY);
-        application.setStatusHistoryElement(statusHistoryElement);
+        application.setStatusHistory(statusHistoryElement);
     }
 
     @Test
