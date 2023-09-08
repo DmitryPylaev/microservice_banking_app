@@ -1,6 +1,6 @@
 package com.neoflex.java2023.enums;
 
-public enum Theme {
+public enum EmailMessageTheme {
     FINISH_REGISTRATION {
         @Override
         public String toString() {
@@ -36,7 +36,6 @@ public enum Theme {
         public String toString() {
             return "application-denied";
         }
-    };
-
+    }
 
 }

@@ -4,7 +4,7 @@ import com.neoflex.java2023.dto.*;
 import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
 import com.neoflex.java2023.enums.CreditStatus;
-import com.neoflex.java2023.enums.Theme;
+import com.neoflex.java2023.enums.EmailMessageTheme;
 import com.neoflex.java2023.model.*;
 import com.neoflex.java2023.repository.ApplicationRepository;
 import com.neoflex.java2023.repository.ClientRepository;
@@ -79,7 +79,7 @@ public class DealServiceImpl implements DealService {
         Application application = optionalApplication.get();
         application.setAppliedOffer(request);
         actualizeApplicationStatus(ApplicationStatus.APPROVED, application);
-        kafkaService.generateEmail(Theme.FINISH_REGISTRATION, application);
+        kafkaService.generateEmail(EmailMessageTheme.FINISH_REGISTRATION, application);
         return applicationRepository.save(application);
     }
 
@@ -99,30 +99,32 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
-    public void sendMessage(ApplicationStatus applicationStatus, Theme theme, Long applicationId) {
+    public void sendMessage(ApplicationStatus applicationStatus, EmailMessageTheme emailMessageTheme, Long applicationId) {
         CustomLogger.logInfoClassAndMethod();
         Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
         if (optionalApplication.isEmpty()) return;
         Application application = optionalApplication.get();
         actualizeApplicationStatus(applicationStatus, application);
-        kafkaService.generateEmail(theme, application);
+        kafkaService.generateEmail(emailMessageTheme, application);
     }
 
     private void deniedCheck(Application application) {
         if (Objects.equals(application.getCredit().getRate(), denyRate)) {
             actualizeApplicationStatus(ApplicationStatus.CC_DENIED, application);
-            kafkaService.generateEmail(Theme.APPLICATION_DENIED, application);
+            kafkaService.generateEmail(EmailMessageTheme.APPLICATION_DENIED, application);
         } else {
             actualizeApplicationStatus(ApplicationStatus.CC_APPROVED, application);
-            kafkaService.generateEmail(Theme.CREATE_DOCUMENTS, application);
+            kafkaService.generateEmail(EmailMessageTheme.CREATE_DOCUMENTS, application);
         }
     }
 
     private void actualizeApplicationStatus(ApplicationStatus applicationStatus, Application application) {
         CustomLogger.logInfoClassAndMethod();
         application.setStatus(applicationStatus);
-        if (application.getStatus() == ApplicationStatus.CREDIT_ISSUED)
+        if (application.getStatus() == ApplicationStatus.CREDIT_ISSUED) {
+            application.setSignDate(LocalDateTime.now());
             actualizeCredit(CreditStatus.ISSUED, application.getCredit(), application);
+        }
         actualizeApplicationStatusHistory(applicationStatus, application);
     }
 
