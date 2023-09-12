@@ -1,7 +1,7 @@
 package com.neoflex.java2023.controller;
 
 import com.neoflex.java2023.enums.ApplicationStatus;
-import com.neoflex.java2023.enums.Theme;
+import com.neoflex.java2023.enums.EmailMessageTheme;
 import com.neoflex.java2023.service.abstraction.DealService;
 import com.neoflex.java2023.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
@@ -19,7 +19,7 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * Контроллер микросервиса сделки для работы с документами
  */
 @Controller
-@RequestMapping("/document")
+@RequestMapping("/deal/document")
 @AllArgsConstructor
 @Log4j2
 @SuppressWarnings("unused")
@@ -32,7 +32,7 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void requestDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
-        dealService.sendMessage(ApplicationStatus.PREPARE_DOCUMENTS, Theme.SEND_DOCUMENTS, id);
+        dealService.sendMessage(ApplicationStatus.PREPARE_DOCUMENTS, EmailMessageTheme.SEND_DOCUMENTS, id);
     }
 
     @Operation(summary = "Запрос на подписание документов")
@@ -40,7 +40,7 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void signDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
-        dealService.sendMessage(ApplicationStatus.DOCUMENT_SIGNED, Theme.SEND_SES, id);
+        dealService.sendMessage(ApplicationStatus.DOCUMENT_SIGNED, EmailMessageTheme.SEND_SES, id);
     }
 
     @Operation(summary = "Подписание документов")
@@ -48,6 +48,6 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void acceptCode(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
-        dealService.sendMessage(ApplicationStatus.CREDIT_ISSUED, Theme.CREDIT_ISSUED, id);
+        dealService.sendMessage(ApplicationStatus.CREDIT_ISSUED, EmailMessageTheme.CREDIT_ISSUED, id);
     }
 }

@@ -1,60 +1,39 @@
-version: '3'
+version: '4'
 
 services:
+#  gateway:
+#    build: gateway
+#    ports:
+#      - "8084:8084"
+#
 #  dossier:
-#    image: dossier-spring-boot:latest
-#    build:
-#      context: ../dossier
-#    container_name: dossier
+#    build: dossier
 #    depends_on:
-#      - deal
+#      - kafka
 #    ports:
 #      - "8083:8083"
-#    networks:
-#      - bank
 #
 #  application:
-#    image: application-spring-boot:latest
-#    build:
-#      context: ../application
-#      dockerfile: Dockerfile
-#    container_name: application
-#    depends_on:
-#      - deal
+#    build: application
 #    ports:
 #      - "8082:8082"
-#    networks:
-#      - bank
 #
 #  deal:
-#    image: deal-spring-boot-postgres:latest
-#    build:
-#      context: ../deal
-#      dockerfile: Dockerfile
-#    container_name: deal
+#    build: deal
 #    depends_on:
 #      - kafka
 #      - db
-#      - conveyor
 #    ports:
 #      - "8080:8080"
-#    networks:
-#      - bank
 #    environment:
 #      - SPRING_DATASOURCE_URL=jdbc:postgresql://db:5432/bank_db
 #      - SPRING_DATASOURCE_USERNAME=postgres
 #      - SPRING_DATASOURCE_PASSWORD=12345
 
   conveyor:
-    image: conveyor-spring-boot:latest
-    build:
-      context: ../conveyor
-      dockerfile: Dockerfile
-    container_name: conveyor
+    build: conveyor
     ports:
       - "8081:8081"
-    networks:
-      - bank
 
   zookeeper:
     image: confluentinc/cp-zookeeper:latest
@@ -63,8 +42,6 @@ services:
       ZOOKEEPER_TICK_TIME: 2000
     ports:
       - "22181:2181"
-    networks:
-      - bank
 
   kafka:
     image: confluentinc/cp-kafka:latest
@@ -72,8 +49,6 @@ services:
       - zookeeper
     ports:
       - "29092:29092"
-    networks:
-      - bank
     environment:
       KAFKA_BROKER_ID: 1
       KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
@@ -91,9 +66,3 @@ services:
       - POSTGRES_DB=bank_db
     ports:
       - "5432:5432"
-    networks:
-      - bank
-
-networks:
-  bank:
-    driver: bridge

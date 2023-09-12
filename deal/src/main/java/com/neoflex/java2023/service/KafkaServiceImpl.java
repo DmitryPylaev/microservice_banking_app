@@ -1,7 +1,7 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.EmailMessage;
-import com.neoflex.java2023.enums.Theme;
+import com.neoflex.java2023.enums.EmailMessageTheme;
 import com.neoflex.java2023.model.Application;
 import com.neoflex.java2023.service.abstraction.KafkaService;
 import lombok.AllArgsConstructor;
@@ -19,14 +19,14 @@ public class KafkaServiceImpl implements KafkaService {
     private KafkaTemplate<String, EmailMessage> kafkaTemplate;
 
     @Override
-    public void generateEmail(Theme theme, Application application) {
+    public void generateEmail(EmailMessageTheme emailMessageTheme, Application application) {
         EmailMessage emailMessage = EmailMessage.builder()
                 .address(application.getClient().getEmail())
-                .theme(theme)
+                .emailMessageTheme(emailMessageTheme)
                 .applicationId(application.getId())
                 .build();
 
-        sendEmail(theme.toString(), emailMessage);
+        sendEmail(emailMessageTheme.toString(), emailMessage);
     }
 
     private void sendEmail(String topicName, EmailMessage emailMessage) {
