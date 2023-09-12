@@ -48,13 +48,13 @@ public class EmailSender {
                 StandardCharsets.UTF_8.name());
 
         Map<String, Object> map = new HashMap<>();
-        map.put("message", emailMessage.getTheme().toString());
+        map.put("message", emailMessage.getEmailMessageTheme().toString());
         Context context = new Context();
         context.setVariables(map);
         String emailContent = templateEngine.process("index", context);
 
         mimeMessageHelper.setTo(emailMessage.getAddress());
-        mimeMessageHelper.setSubject(emailMessage.getTheme().toString());
+        mimeMessageHelper.setSubject(emailMessage.getEmailMessageTheme().toString());
         mimeMessageHelper.setFrom(addressFrom);
         mimeMessageHelper.setText(emailContent, true);
         for (String o : attachments)
