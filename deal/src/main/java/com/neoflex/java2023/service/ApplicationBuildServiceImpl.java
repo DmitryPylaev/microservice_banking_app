@@ -1,14 +1,15 @@
 package com.neoflex.java2023.service;
 
-import com.neoflex.java2023.dto.*;
+import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
 import com.neoflex.java2023.enums.ApplicationStatus;
 import com.neoflex.java2023.enums.ChangeType;
-import com.neoflex.java2023.model.*;
+import com.neoflex.java2023.model.Application;
+import com.neoflex.java2023.model.Client;
+import com.neoflex.java2023.model.Passport;
 import com.neoflex.java2023.model.StatusHistoryElement;
 import com.neoflex.java2023.service.abstraction.ApplicationBuildService;
 import com.neoflex.java2023.util.CustomLogger;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -18,7 +19,6 @@ import java.util.List;
 
 @Service
 @AllArgsConstructor
-@Log4j2
 public class ApplicationBuildServiceImpl implements ApplicationBuildService {
 
     @Override

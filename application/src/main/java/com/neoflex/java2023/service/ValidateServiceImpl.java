@@ -2,6 +2,8 @@ package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.LoanApplicationRequestDTO;
 import com.neoflex.java2023.service.abstraction.ValidateService;
+import com.neoflex.java2023.service.exception.ValidateException;
+import com.neoflex.java2023.util.CustomLogger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -40,29 +42,31 @@ public class ValidateServiceImpl implements ValidateService {
 
     @Override
     public boolean validatePrescoringRequest(LoanApplicationRequestDTO request) {
+        CustomLogger.logInfoClassAndMethod();
         try {
             if (request.getFirstName().length() > nameLengthMax || request.getFirstName().length() < nameLengthMin)
-                throw new RuntimeException("Имя не правильной длины");
+                throw new ValidateException("Имя не правильной длины");
             if (request.getLastName().length() > nameLengthMax || request.getLastName().length() < nameLengthMin)
-                throw new RuntimeException("Фамилия не правильной длины");
-            if (request.getTerm() < minTerm) throw new RuntimeException("Неправильный срок");
+                throw new ValidateException("Фамилия не правильной длины");
+            if (request.getTerm() < minTerm) throw new ValidateException("Неправильный срок");
             long resultYears = ChronoUnit.YEARS.between(request.getBirthdate(), LocalDate.now());
-            if (resultYears < minAge) throw new RuntimeException("Нет 18 лет");
-            validateRegexMatch(request.getEmail(), emailPattern, new RuntimeException("Неправильный email"));
-            validateRegexMatch(request.getPassportSeries(), passportSeriesPattern, new RuntimeException("Неправильная серия паспорта"));
-            validateRegexMatch(request.getPassportNumber(), passportNumberPattern, new RuntimeException("Неправильный номер паспорта"));
+            if (resultYears < minAge) throw new ValidateException("Нет 18 лет");
+            validateRegexMatch(request.getEmail(), emailPattern, new ValidateException("Неправильный email"));
+            validateRegexMatch(request.getPassportSeries(), passportSeriesPattern, new ValidateException("Неправильная серия паспорта"));
+            validateRegexMatch(request.getPassportNumber(), passportNumberPattern, new ValidateException("Неправильный номер паспорта"));
             log.info("Заявка на прескоринг валидна");
             return true;
-        } catch (RuntimeException e) {
+        } catch (ValidateException e) {
             log.info("Заявка на прескоринг не валидна. " + e.getMessage());
             return false;
         }
     }
 
-    private static void validateRegexMatch(String str, String regex, RuntimeException runtimeException) {
-        if (str == null) throw runtimeException;
+    private static void validateRegexMatch(String str, String regex, ValidateException exception) {
+        CustomLogger.logInfoClassAndMethod();
+        if (str == null) throw exception;
         Pattern pattern = Pattern.compile(regex);
         Matcher matcher = pattern.matcher(str);
-        if (!matcher.matches()) throw runtimeException;
+        if (!matcher.matches()) throw exception;
     }
 }

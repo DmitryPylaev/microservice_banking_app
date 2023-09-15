@@ -4,7 +4,6 @@ import com.neoflex.java2023.dto.*;
 import com.neoflex.java2023.service.abstraction.OffersService;
 import com.neoflex.java2023.service.abstraction.ScoringService;
 import com.neoflex.java2023.util.CustomLogger;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -16,7 +15,6 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
-@Log4j2
 public class OffersServiceImpl implements OffersService {
 
     private final ScoringService scoringService;
@@ -40,8 +38,8 @@ public class OffersServiceImpl implements OffersService {
         ).sorted(Comparator.comparing(LoanOfferDTO::getRate).reversed()).toList();
     }
 
-    private LoanOfferDTO createPrescoringOffer(Boolean isInsuranceEnabled,
-                                               Boolean isSalaryClient,
+    private LoanOfferDTO createPrescoringOffer(boolean isInsuranceEnabled,
+                                               boolean isSalaryClient,
                                                LoanApplicationRequestDTO request) {
         CustomLogger.logInfoClassAndMethod();
         BigDecimal amount = request.getAmount();

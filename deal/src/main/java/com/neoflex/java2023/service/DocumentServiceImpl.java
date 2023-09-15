@@ -29,7 +29,7 @@ public class DocumentServiceImpl implements DocumentService {
     public void createDocument(Application application) {
         CustomLogger.logInfoClassAndMethod();
         try {
-            Files.createDirectories(Paths.get(documentFolder + application.getId()));
+            Files.createDirectories(Paths.get(documentFolder));
             saveDocxFile("Кредитный договор", application.getCredit().toString(), application.getId());
             saveDocxFile("Анкета", application.getClient().toString(), application.getId());
             saveDocxFile("График платежей", Arrays.toString(application.getCredit().getPaymentSchedule().toArray()), application.getId());
@@ -40,10 +40,11 @@ public class DocumentServiceImpl implements DocumentService {
     }
 
     private void saveDocxFile(String title, String paragraphText, Long id) throws Docx4JException {
+        CustomLogger.logInfoClassAndMethod();
         WordprocessingMLPackage wordPackage = WordprocessingMLPackage.createPackage();
         MainDocumentPart mainDocumentPart = wordPackage.getMainDocumentPart();
         mainDocumentPart.addStyledParagraphOfText("Title", title);
         mainDocumentPart.addParagraphOfText(paragraphText);
-        wordPackage.save(new File(documentFolder + id + "\\" + title + ".docx"));
+        wordPackage.save(new File(documentFolder + id + " " + title + ".docx"));
     }
 }

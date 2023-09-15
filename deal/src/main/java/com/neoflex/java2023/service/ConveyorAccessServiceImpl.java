@@ -6,14 +6,12 @@ import com.neoflex.java2023.model.Client;
 import com.neoflex.java2023.service.abstraction.ConveyorAccessService;
 import com.neoflex.java2023.util.CustomLogger;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 
 @Service
 @AllArgsConstructor
-@Log4j2
 public class ConveyorAccessServiceImpl implements ConveyorAccessService {
     private FeignConveyor feignConveyor;
 

@@ -3,7 +3,6 @@ package com.neoflex.java2023.service.mail;
 import com.neoflex.java2023.dto.EmailMessage;
 import com.neoflex.java2023.util.CustomLogger;
 import jakarta.mail.internet.MimeMessage;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.PropertySources;
@@ -19,7 +18,6 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@Log4j2
 @PropertySources({
         @PropertySource("classpath:application.properties"),
         @PropertySource("classpath:private.properties")
@@ -58,7 +56,7 @@ public class EmailSender {
         mimeMessageHelper.setFrom(addressFrom);
         mimeMessageHelper.setText(emailContent, true);
         for (String o : attachments)
-            mimeMessageHelper.addAttachment(o, new File(documentFolder + emailMessage.getApplicationId() + "\\" + o));
+            mimeMessageHelper.addAttachment(o, new File(documentFolder + emailMessage.getApplicationId() + " " + o));
         mailSender.send(message);
     }
 }

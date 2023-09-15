@@ -13,7 +13,6 @@ import com.neoflex.java2023.service.abstraction.*;
 import com.neoflex.java2023.service.mapper.CreditMapper;
 import com.neoflex.java2023.service.mapper.EmploymentMapper;
 import com.neoflex.java2023.util.CustomLogger;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,7 +25,6 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
-@Log4j2
 public class DealServiceImpl implements DealService {
     private final BigDecimal denyRate;
     private final ApplicationBuildService applicationBuildService;
@@ -94,7 +92,6 @@ public class DealServiceImpl implements DealService {
         actualizeClient(request.getEmployment(), application);
         actualizeCredit(CreditStatus.CALCULATED, creditMapper.mapCredit(creditDto), application);
         deniedCheck(application);
-        documentService.createDocument(application);
         return creditDto;
     }
 
@@ -104,11 +101,16 @@ public class DealServiceImpl implements DealService {
         Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
         if (optionalApplication.isEmpty()) return;
         Application application = optionalApplication.get();
-        actualizeApplicationStatus(applicationStatus, application);
+        if (applicationStatus.equals(ApplicationStatus.PREPARE_DOCUMENTS)) {
+            documentService.createDocument(application);
+            actualizeApplicationStatus(ApplicationStatus.DOCUMENT_CREATED, application);
+        }
+        else actualizeApplicationStatus(applicationStatus, application);
         kafkaService.generateEmail(emailMessageTheme, application);
     }
 
     private void deniedCheck(Application application) {
+        CustomLogger.logInfoClassAndMethod();
         if (Objects.equals(application.getCredit().getRate(), denyRate)) {
             actualizeApplicationStatus(ApplicationStatus.CC_DENIED, application);
             kafkaService.generateEmail(EmailMessageTheme.APPLICATION_DENIED, application);
@@ -140,6 +142,7 @@ public class DealServiceImpl implements DealService {
     }
 
     private void actualizeClient(EmploymentDTO employmentDto, Application application) {
+        CustomLogger.logInfoClassAndMethod();
         Client client = application.getClient();
         Employment employment = employmentMapper.mapEmploymentJSON(employmentDto);
         client.setEmployment(employment);
@@ -147,6 +150,7 @@ public class DealServiceImpl implements DealService {
     }
 
     private void actualizeCredit(CreditStatus creditStatus, Credit credit, Application application) {
+        CustomLogger.logInfoClassAndMethod();
         credit.setCreditStatus(creditStatus);
         application.setCredit(creditRepository.save(credit));
         applicationRepository.save(application);

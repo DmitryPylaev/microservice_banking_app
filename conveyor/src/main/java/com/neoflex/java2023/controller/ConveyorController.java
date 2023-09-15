@@ -9,7 +9,6 @@ import com.neoflex.java2023.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -24,7 +23,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/conveyor")
 @AllArgsConstructor
-@Log4j2
 @SuppressWarnings("unused")
 @Tag(name = "ConveyorController", description = "Контроллер кредитного конвейра")
 public class ConveyorController {

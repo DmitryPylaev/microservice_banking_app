@@ -10,7 +10,7 @@ import org.testcontainers.containers.PostgreSQLContainer;
 public class BaseTest {
 
     public static final String POSTGRES_VERSION = "postgres:13.1-alpine";
-    static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(POSTGRES_VERSION);
+    static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(POSTGRES_VERSION);
 
     @BeforeAll
     static void beforeAll() {

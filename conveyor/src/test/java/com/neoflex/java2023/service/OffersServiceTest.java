@@ -21,6 +21,7 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -68,7 +69,7 @@ class OffersServiceTest {
                 .passportNumber("576687")
                 .build();
 
-        when(scoringService.calculatePrescoringRate(any(), any())).thenReturn(BigDecimal.valueOf(baseRate)
+        when(scoringService.calculatePrescoringRate(anyBoolean(), anyBoolean())).thenReturn(BigDecimal.valueOf(baseRate)
                         .subtract(BigDecimal.valueOf(insuranceRateDiscount + salaryClientRateDiscount)),
                 BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(insuranceRateDiscount)),
                 BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(salaryClientRateDiscount)),
@@ -81,8 +82,8 @@ class OffersServiceTest {
 
         assertEquals(4, result.size());
         assertEquals(amount, result.get(0).getRequestedAmount());
-        verify(scoringService, Mockito.times(4)).evaluateTotalAmount(any(), any());
-        verify(scoringService, Mockito.times(4)).calculatePrescoringRate(any(), any());
+        verify(scoringService, Mockito.times(4)).evaluateTotalAmount(any(), anyBoolean());
+        verify(scoringService, Mockito.times(4)).calculatePrescoringRate(anyBoolean(), anyBoolean());
 
         Assertions.assertDoesNotThrow(() -> offersService.createPrescoringOffers(dto));
 

@@ -61,6 +61,7 @@ public class GatewayController {
     @ResponseStatus(value = HttpStatus.OK)
     public void requestDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         feignDeal.requestDocuments(id);
     }
 
@@ -69,6 +70,7 @@ public class GatewayController {
     @ResponseStatus(value = HttpStatus.OK)
     public void signDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         feignDeal.signDocuments(id);
     }
 
@@ -77,6 +79,7 @@ public class GatewayController {
     @ResponseStatus(value = HttpStatus.OK)
     public void acceptCode(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         feignDeal.acceptCode(id);
     }
 }

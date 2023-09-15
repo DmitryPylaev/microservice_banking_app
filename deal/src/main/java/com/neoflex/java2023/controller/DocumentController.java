@@ -7,7 +7,6 @@ import com.neoflex.java2023.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -21,7 +20,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 @Controller
 @RequestMapping("/deal/document")
 @AllArgsConstructor
-@Log4j2
 @SuppressWarnings("unused")
 @Tag(name = "DocumentController", description = "Контроллер микросервиса сделки для работы с документами")
 public class DocumentController {
@@ -32,6 +30,7 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void requestDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         dealService.sendMessage(ApplicationStatus.PREPARE_DOCUMENTS, EmailMessageTheme.SEND_DOCUMENTS, id);
     }
 
@@ -40,6 +39,7 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void signDocuments(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         dealService.sendMessage(ApplicationStatus.DOCUMENT_SIGNED, EmailMessageTheme.SEND_SES, id);
     }
 
@@ -48,6 +48,7 @@ public class DocumentController {
     @ResponseStatus(value = HttpStatus.OK)
     public void acceptCode(@RequestParam long id) {
         CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(id);
         dealService.sendMessage(ApplicationStatus.CREDIT_ISSUED, EmailMessageTheme.CREDIT_ISSUED, id);
     }
 }

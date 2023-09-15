@@ -7,13 +7,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface ScoringService {
-    BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled);
+    BigDecimal evaluateTotalAmount(BigDecimal amount, boolean isInsuranceEnabled);
 
-    BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient);
+    BigDecimal calculatePrescoringRate(boolean isInsuranceEnabled, boolean isSalaryClient);
 
     BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate);
 
-    BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled);
+    BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, boolean isInsuranceEnabled);
 
     List<PaymentScheduleElement> paymentScheduleBuild(BigDecimal amount, Integer term, BigDecimal rate, BigDecimal monthlyPayment);
 

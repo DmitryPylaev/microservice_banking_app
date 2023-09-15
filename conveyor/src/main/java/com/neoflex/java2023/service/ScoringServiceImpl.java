@@ -5,6 +5,7 @@ import com.neoflex.java2023.dto.PaymentScheduleElement;
 import com.neoflex.java2023.dto.ScoringDataDTO;
 import com.neoflex.java2023.enums.EmploymentStatus;
 import com.neoflex.java2023.service.abstraction.ScoringService;
+import com.neoflex.java2023.service.exception.CalculateScoringRateException;
 import com.neoflex.java2023.util.CustomLogger;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,7 +23,7 @@ import java.util.List;
 public class ScoringServiceImpl implements ScoringService {
     public static final int MONTH_OF_YEAR = 12;
     public static final int IN_PERCENT_CONVERT_CONSTANT = 100;
-    private final MathContext BIGDECIMAL_PRECISION = new MathContext(7);
+    private final MathContext bigdecimalPrecision = new MathContext(7);
     private final Double baseRate;
     private final Integer denyRate;
     private final Integer insurancePrice;
@@ -72,13 +73,13 @@ public class ScoringServiceImpl implements ScoringService {
     }
 
     @Override
-    public BigDecimal evaluateTotalAmount(BigDecimal amount, Boolean isInsuranceEnabled) {
+    public BigDecimal evaluateTotalAmount(BigDecimal amount, boolean isInsuranceEnabled) {
         CustomLogger.logInfoClassAndMethod();
         return (isInsuranceEnabled) ? amount.subtract(BigDecimal.valueOf(insurancePrice)) : amount;
     }
 
     @Override
-    public BigDecimal calculatePrescoringRate(Boolean isInsuranceEnabled, Boolean isSalaryClient) {
+    public BigDecimal calculatePrescoringRate(boolean isInsuranceEnabled, boolean isSalaryClient) {
         CustomLogger.logInfoClassAndMethod();
         BigDecimal rate = BigDecimal.valueOf(baseRate);
         if (isInsuranceEnabled) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
@@ -89,21 +90,21 @@ public class ScoringServiceImpl implements ScoringService {
     @Override
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate) {
         CustomLogger.logInfoClassAndMethod();
-        BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), BIGDECIMAL_PRECISION);
+        BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
         BigDecimal percent = monthRate.add(BigDecimal.ONE).pow(term);
-        BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), BIGDECIMAL_PRECISION));
-        return amount.multiply(annuityCoefficient, BIGDECIMAL_PRECISION);
+        BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), bigdecimalPrecision));
+        return amount.multiply(annuityCoefficient, bigdecimalPrecision);
     }
 
     @Override
-    public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, Boolean isInsuranceEnabled) {
+    public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, boolean isInsuranceEnabled) {
         CustomLogger.logInfoClassAndMethod();
         BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
         overpayment = (isInsuranceEnabled) ? overpayment.add(BigDecimal.valueOf(insurancePrice)) : overpayment;
-        BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(MONTH_OF_YEAR), BIGDECIMAL_PRECISION);
-        return overpayment.divide(amount, BIGDECIMAL_PRECISION)
+        BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(MONTH_OF_YEAR), bigdecimalPrecision);
+        return overpayment.divide(amount, bigdecimalPrecision)
                 .subtract(BigDecimal.ONE)
-                .divide(termYear, BIGDECIMAL_PRECISION)
+                .divide(termYear, bigdecimalPrecision)
                 .multiply(BigDecimal.valueOf(IN_PERCENT_CONVERT_CONSTANT));
     }
 
@@ -112,9 +113,9 @@ public class ScoringServiceImpl implements ScoringService {
         CustomLogger.logInfoClassAndMethod();
         List<PaymentScheduleElement> paymentSchedule = new ArrayList<>();
         for (int i = 0; i < term; i++) {
-            BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), BIGDECIMAL_PRECISION);
-            BigDecimal interestPayment = monthRate.multiply(amount, BIGDECIMAL_PRECISION);
-            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment, BIGDECIMAL_PRECISION);
+            BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
+            BigDecimal interestPayment = monthRate.multiply(amount, bigdecimalPrecision);
+            BigDecimal debtPayment = monthlyPayment.subtract(interestPayment, bigdecimalPrecision);
             amount = amount.subtract(debtPayment);
 
             paymentSchedule.add(PaymentScheduleElement.builder()
@@ -136,17 +137,17 @@ public class ScoringServiceImpl implements ScoringService {
         EmploymentDTO employmentDTO = scoringDataDTO.getEmployment();
         try {
             if (employmentDTO.getEmploymentStatus().equals(EmploymentStatus.UNEMPLOYED))
-                throw new RuntimeException("Безработный. Отказ");
+                throw new CalculateScoringRateException("Безработный. Отказ");
             if (scoringDataDTO.getAmount().compareTo(employmentDTO.getSalary().multiply(BigDecimal.valueOf(salaryMinCoefficient))) > 0)
-                throw new RuntimeException("Низкий доход. Отказ");
+                throw new CalculateScoringRateException("Низкий доход. Отказ");
             if (employmentDTO.getWorkExperienceTotal() < workExperienceTotalMin)
-                throw new RuntimeException("Общий стаж недостаточен");
+                throw new CalculateScoringRateException("Общий стаж недостаточен");
             if (employmentDTO.getWorkExperienceCurrent() < workExperienceCurrentMin)
-                throw new RuntimeException("Текущий стаж недостаточен");
+                throw new CalculateScoringRateException("Текущий стаж недостаточен");
             long age = ChronoUnit.YEARS.between(scoringDataDTO.getBirthdate(), LocalDate.now());
-            if (age < minAge) throw new RuntimeException("Нет 18 лет");
-            if (age > maxAge) throw new RuntimeException("Больше 60 лет");
-        } catch (RuntimeException e) {
+            if (age < minAge) throw new CalculateScoringRateException("Нет 18 лет");
+            if (age > maxAge) throw new CalculateScoringRateException("Больше 60 лет");
+        } catch (CalculateScoringRateException e) {
             log.info("Отказ в кредите. " + e.getMessage());
             return BigDecimal.valueOf(denyRate);
         }

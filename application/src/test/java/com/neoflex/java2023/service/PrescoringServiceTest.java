@@ -48,11 +48,11 @@ class PrescoringServiceTest {
         when(feignDeal.getOffers(any())).thenReturn(expectedList);
         when(validateService.validatePrescoringRequest(any())).thenReturn(true);
         List<LoanOfferDTO> resultList = prescoringService.getPreparedOffers(dto);
-        assertEquals(resultList.size(), 1);
+        assertEquals(1, resultList.size());
         assertEquals(resultList.get(0).getTotalAmount(), BigDecimal.TEN);
 
         when(validateService.validatePrescoringRequest(any())).thenReturn(false);
-        assertEquals(prescoringService.getPreparedOffers(dto).size(), 0);
+        assertEquals(0, prescoringService.getPreparedOffers(dto).size());
     }
 
     @Test

@@ -10,7 +10,6 @@ import com.neoflex.java2023.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
-import lombok.extern.log4j.Log4j2;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,7 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("/deal")
 @AllArgsConstructor
-@Log4j2
 @SuppressWarnings("unused")
 @Tag(name = "DealController", description = "Контроллер микросервиса сделки")
 public class DealController {

@@ -1,14 +1,8 @@
 package com.neoflex.java2023.service;
 
 import com.neoflex.java2023.dto.*;
-import com.neoflex.java2023.enums.ApplicationStatus;
-import com.neoflex.java2023.enums.ChangeType;
-import com.neoflex.java2023.enums.EmploymentPosition;
-import com.neoflex.java2023.enums.EmploymentStatus;
-import com.neoflex.java2023.model.Application;
-import com.neoflex.java2023.model.Client;
-import com.neoflex.java2023.model.Passport;
-import com.neoflex.java2023.model.StatusHistoryElement;
+import com.neoflex.java2023.enums.*;
+import com.neoflex.java2023.model.*;
 import com.neoflex.java2023.repository.ApplicationRepository;
 import com.neoflex.java2023.repository.ClientRepository;
 import com.neoflex.java2023.service.abstraction.ApplicationBuildService;
@@ -184,5 +178,16 @@ class DealServiceTest extends BaseTest {
 
         when(applicationRepository.findById(anyLong())).thenReturn(Optional.empty());
         assertEquals(CreditDTO.builder().build(), dealService.finishCalculateCredit(FinishRegistrationRequestDTO.builder().build(), 1L));
+    }
+
+    @Test
+    void send() {
+        Credit credit = Credit.builder()
+                .paymentSchedule(new ArrayList<>())
+                .build();
+        application.setCredit(credit);
+        when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
+        assertDoesNotThrow(() -> dealService.sendMessage(ApplicationStatus.PREPARE_DOCUMENTS, EmailMessageTheme.SEND_DOCUMENTS, 1L));
+        assertEquals(application.getStatus(), ApplicationStatus.DOCUMENT_CREATED);
     }
 }

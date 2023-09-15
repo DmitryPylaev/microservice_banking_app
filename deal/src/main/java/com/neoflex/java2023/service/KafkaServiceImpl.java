@@ -4,6 +4,7 @@ import com.neoflex.java2023.dto.EmailMessage;
 import com.neoflex.java2023.enums.EmailMessageTheme;
 import com.neoflex.java2023.model.Application;
 import com.neoflex.java2023.service.abstraction.KafkaService;
+import com.neoflex.java2023.util.CustomLogger;
 import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.kafka.core.KafkaTemplate;
@@ -20,6 +21,7 @@ public class KafkaServiceImpl implements KafkaService {
 
     @Override
     public void generateEmail(EmailMessageTheme emailMessageTheme, Application application) {
+        CustomLogger.logInfoClassAndMethod();
         EmailMessage emailMessage = EmailMessage.builder()
                 .address(application.getClient().getEmail())
                 .emailMessageTheme(emailMessageTheme)
@@ -30,6 +32,7 @@ public class KafkaServiceImpl implements KafkaService {
     }
 
     private void sendEmail(String topicName, EmailMessage emailMessage) {
+        CustomLogger.logInfoClassAndMethod();
         CompletableFuture<SendResult<String, EmailMessage>> future = kafkaTemplate.send(topicName, emailMessage);
         future.whenComplete((result, ex) -> {
             if (ex == null) {
