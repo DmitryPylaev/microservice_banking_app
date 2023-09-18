@@ -1,4 +1,4 @@
-package com.neoflex.java.service.kafkaConfig;
+package com.neoflex.java.service.kafka_config;
 
 import com.neoflex.java.dto.EmailMessage;
 import org.apache.kafka.clients.consumer.ConsumerConfig;

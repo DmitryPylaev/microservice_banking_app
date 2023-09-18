@@ -11,8 +11,8 @@ import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.service.abstraction.AdminService;
 import com.neoflex.java.service.abstraction.KafkaService;
 import com.neoflex.java.service.config.BaseTest;
-import com.neoflex.java.service.kafkaConfig.KafkaProducerConfig;
-import com.neoflex.java.service.kafkaConfig.KafkaTopicConfig;
+import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
+import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -96,7 +96,7 @@ class AdminServiceImplTest extends BaseTest {
     void findApplicationById() {
         when(applicationRepository.findById(1L)).thenReturn(Optional.ofNullable(application));
         assertDoesNotThrow(() -> adminService.findApplicationById(1L));
-        assertEquals(adminService.findApplicationById(1L), application);
+        assertEquals(application, adminService.findApplicationById(1L));
     }
 
     @Test

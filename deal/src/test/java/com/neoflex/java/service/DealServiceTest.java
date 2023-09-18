@@ -10,8 +10,8 @@ import com.neoflex.java.service.abstraction.ConveyorAccessService;
 import com.neoflex.java.service.abstraction.DealService;
 import com.neoflex.java.service.abstraction.KafkaService;
 import com.neoflex.java.service.config.BaseTest;
-import com.neoflex.java.service.kafkaConfig.KafkaProducerConfig;
-import com.neoflex.java.service.kafkaConfig.KafkaTopicConfig;
+import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
+import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -177,7 +177,7 @@ class DealServiceTest extends BaseTest {
         assertEquals(expectedCreditDTO, dealService.finishCalculateCredit(request, 1L));
 
         when(applicationRepository.findById(anyLong())).thenReturn(Optional.empty());
-        assertEquals(CreditDTO.builder().build(), dealService.finishCalculateCredit(FinishRegistrationRequestDTO.builder().build(), 1L));
+        assertEquals(dealService.finishCalculateCredit(FinishRegistrationRequestDTO.builder().build(), 1L), CreditDTO.builder().build());
     }
 
     @Test
@@ -188,6 +188,6 @@ class DealServiceTest extends BaseTest {
         application.setCredit(credit);
         when(applicationRepository.findById(1L)).thenReturn(Optional.of(application));
         assertDoesNotThrow(() -> dealService.sendMessage(ApplicationStatus.PREPARE_DOCUMENTS, EmailMessageTheme.SEND_DOCUMENTS, 1L));
-        assertEquals(application.getStatus(), ApplicationStatus.DOCUMENT_CREATED);
+        assertEquals(ApplicationStatus.DOCUMENT_CREATED, application.getStatus());
     }
 }

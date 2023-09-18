@@ -49,7 +49,7 @@ class PrescoringServiceTest {
         when(validateService.validatePrescoringRequest(any())).thenReturn(true);
         List<LoanOfferDTO> resultList = prescoringService.getPreparedOffers(dto);
         assertEquals(1, resultList.size());
-        assertEquals(resultList.get(0).getTotalAmount(), BigDecimal.TEN);
+        assertEquals(BigDecimal.TEN, resultList.get(0).getTotalAmount());
 
         when(validateService.validatePrescoringRequest(any())).thenReturn(false);
         assertEquals(0, prescoringService.getPreparedOffers(dto).size());

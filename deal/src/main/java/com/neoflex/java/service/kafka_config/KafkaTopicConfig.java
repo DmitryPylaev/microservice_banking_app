@@ -1,4 +1,4 @@
-package com.neoflex.java.service.kafkaConfig;
+package com.neoflex.java.service.kafka_config;
 
 import org.apache.kafka.clients.admin.AdminClientConfig;
 import org.apache.kafka.clients.admin.NewTopic;

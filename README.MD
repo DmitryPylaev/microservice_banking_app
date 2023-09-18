@@ -1,3 +1,12 @@
+[![codecov](https://codecov.io/gh/PylaevDmitry/microservice_banking_project/graph/badge.svg?token=EG9B6BUKB7)](https://codecov.io/gh/PylaevDmitry/microservice_banking_project)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Bugs](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=bugs)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=sqale_rating)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Code Smells](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=code_smells)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+[![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=PylaevDmitry_microservice_banking_project&metric=security_rating)](https://sonarcloud.io/summary/new_code?id=PylaevDmitry_microservice_banking_project)
+
 Приложение с микросервисной архитектурой - прототип банка, разработал Пылаев Дмитрий. 
 Выполнено с приминением технологий и инструментов:
 Java, SpringBoot, PostgreSQL, JPA, Swagger, Kafka, JUnit, Lombok.

@@ -90,7 +90,7 @@ public class ScoringServiceImpl implements ScoringService {
     @Override
     public BigDecimal calculateMonthlyPayment(BigDecimal amount, Integer term, BigDecimal rate) {
         CustomLogger.logInfoClassAndMethod();
-        BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
+        BigDecimal monthRate = rate.divide(BigDecimal.valueOf((long) MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
         BigDecimal percent = monthRate.add(BigDecimal.ONE).pow(term);
         BigDecimal annuityCoefficient = monthRate.multiply(percent.divide(percent.subtract(BigDecimal.ONE), bigdecimalPrecision));
         return amount.multiply(annuityCoefficient, bigdecimalPrecision);
@@ -113,14 +113,14 @@ public class ScoringServiceImpl implements ScoringService {
         CustomLogger.logInfoClassAndMethod();
         List<PaymentScheduleElement> paymentSchedule = new ArrayList<>();
         for (int i = 0; i < term; i++) {
-            BigDecimal monthRate = rate.divide(BigDecimal.valueOf(MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
+            BigDecimal monthRate = rate.divide(BigDecimal.valueOf((long) MONTH_OF_YEAR * IN_PERCENT_CONVERT_CONSTANT), bigdecimalPrecision);
             BigDecimal interestPayment = monthRate.multiply(amount, bigdecimalPrecision);
             BigDecimal debtPayment = monthlyPayment.subtract(interestPayment, bigdecimalPrecision);
             amount = amount.subtract(debtPayment);
 
             paymentSchedule.add(PaymentScheduleElement.builder()
                     .number(i + 1)
-                    .date(LocalDate.now().plus(i + 1, ChronoUnit.MONTHS))
+                    .date(LocalDate.now().plus(i + 1L, ChronoUnit.MONTHS))
                     .totalPayment(monthlyPayment)
                     .interestPayment(interestPayment)
                     .debtPayment(debtPayment)

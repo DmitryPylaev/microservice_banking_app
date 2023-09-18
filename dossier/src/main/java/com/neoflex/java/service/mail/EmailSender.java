@@ -5,7 +5,6 @@ import com.neoflex.java.util.CustomLogger;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.PropertySource;
-import org.springframework.context.annotation.PropertySources;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.stereotype.Service;
@@ -18,10 +17,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Service
-@PropertySources({
-        @PropertySource("classpath:application.properties"),
-        @PropertySource("classpath:private.properties")
-})
+@PropertySource("classpath:application.properties")
+@PropertySource("classpath:private.properties")
 public class EmailSender {
     private final JavaMailSender mailSender;
     private final SpringTemplateEngine templateEngine;
