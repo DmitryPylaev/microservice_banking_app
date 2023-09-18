@@ -1093,9 +1093,6 @@ GET: /deal/admin/application/ - получить все заявки
     }
     ]
 
-// TODO: 05.09.2023
-PUT: /deal/admin/application/{applicationId}/status - обновить статус заявки
-
 Микросервис application
 POST: /application - первичная валидация заявки, создание заявки
 
