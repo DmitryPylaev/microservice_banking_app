@@ -12,7 +12,7 @@ import com.neoflex.java.model.Passport;
 import com.neoflex.java.model.StatusHistoryElement;
 import com.neoflex.java.service.abstraction.ConveyorAccessService;
 import com.neoflex.java.service.abstraction.KafkaService;
-import com.neoflex.java.service.config.BaseTest;
+import com.neoflex.java.service.config.BaseTestcontainer;
 import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
 import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
@@ -42,7 +42,7 @@ import static org.mockito.Mockito.when;
 @ComponentScan("com.neoflex.java")
 @EnableAutoConfiguration
 @SuppressWarnings("unused")
-class ConveyorAccessServiceTest extends BaseTest {
+class ConveyorAccessServiceTest extends BaseTestcontainer {
     @MockBean
     private FeignConveyor feignConveyor;
     @MockBean

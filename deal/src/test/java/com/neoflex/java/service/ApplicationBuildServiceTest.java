@@ -8,7 +8,7 @@ import com.neoflex.java.model.Client;
 import com.neoflex.java.model.Passport;
 import com.neoflex.java.model.StatusHistoryElement;
 import com.neoflex.java.service.abstraction.ApplicationBuildService;
-import com.neoflex.java.service.config.BaseTest;
+import com.neoflex.java.service.config.BaseTestcontainer;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +26,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest(classes = {ApplicationBuildServiceImpl.class})
 @ComponentScan("com.neoflex.java")
-class ApplicationBuildServiceTest extends BaseTest {
+class ApplicationBuildServiceTest extends BaseTestcontainer {
     @Autowired
     private ApplicationBuildService applicationBuildService;
     private static final BigDecimal AMOUNT = BigDecimal.valueOf(300000);
