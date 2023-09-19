@@ -7,7 +7,7 @@ on:
 
   push:
     branches:
-      - "feature/devOps"
+      - "develop"
 
 jobs:
   build:

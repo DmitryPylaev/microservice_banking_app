@@ -81,13 +81,12 @@ public class OffersServiceImpl implements OffersService {
                 .paymentSchedule(new ArrayList<>())
                 .build();
 
-        BigDecimal totalAmount = scoringService.evaluateTotalAmount(amount, isInsuranceEnabled);
         BigDecimal monthlyPayment = scoringService.calculateMonthlyPayment(amount, term, rate);
         BigDecimal psk = scoringService.calculatePsk(amount, monthlyPayment, term, isInsuranceEnabled);
         List<PaymentScheduleElement> paymentSchedule = scoringService.paymentScheduleBuild(amount, term, rate, monthlyPayment);
 
         return CreditDTO.builder()
-                .amount(totalAmount)
+                .amount(amount)
                 .term(term)
                 .monthlyPayment(monthlyPayment)
                 .rate(rate)
