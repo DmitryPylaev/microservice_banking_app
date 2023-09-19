@@ -2,7 +2,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
-        <groupId>com.neoflex.2023</groupId>
+        <groupId>com.neoflex.java</groupId>
         <artifactId>neoflex-project</artifactId>
         <version>${revision}${changelist}</version>
     </parent>
