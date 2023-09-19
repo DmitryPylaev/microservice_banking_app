@@ -10,7 +10,7 @@ import com.neoflex.java.model.StatusHistoryElement;
 import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.service.abstraction.AdminService;
 import com.neoflex.java.service.abstraction.KafkaService;
-import com.neoflex.java.service.config.BaseTestcontainer;
+import com.neoflex.java.service.config.BaseTestContainer;
 import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
 import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @ComponentScan("com.neoflex.java")
 @EnableAutoConfiguration
 @SuppressWarnings("unused")
-class AdminServiceImplTest extends BaseTestcontainer {
+class AdminServiceImplTest extends BaseTestContainer {
     @MockBean
     private KafkaService kafkaService;
     @MockBean

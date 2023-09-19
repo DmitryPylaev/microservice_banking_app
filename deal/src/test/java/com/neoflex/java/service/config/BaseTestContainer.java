@@ -7,7 +7,7 @@ import org.springframework.test.context.DynamicPropertySource;
 import org.testcontainers.containers.PostgreSQLContainer;
 
 @SuppressWarnings("unused")
-public class BaseTestcontainer {
+public class BaseTestContainer {
 
     public static final String POSTGRES_VERSION = "postgres:13.1-alpine";
     static final PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>(POSTGRES_VERSION);

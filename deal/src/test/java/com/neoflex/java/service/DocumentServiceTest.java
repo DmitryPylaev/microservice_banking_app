@@ -6,7 +6,7 @@ import com.neoflex.java.enums.ChangeType;
 import com.neoflex.java.model.*;
 import com.neoflex.java.service.abstraction.DocumentService;
 import com.neoflex.java.service.abstraction.KafkaService;
-import com.neoflex.java.service.config.BaseTestcontainer;
+import com.neoflex.java.service.config.BaseTestContainer;
 import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
 import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
@@ -34,7 +34,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @ComponentScan("com.neoflex.java")
 @EnableAutoConfiguration
 @SuppressWarnings("unused")
-class DocumentServiceTest extends BaseTestcontainer {
+class DocumentServiceTest extends BaseTestContainer {
     private static final String[] ATTACHED_FILES = {"Кредитный договор.docx", "Анкета.docx", "График платежей.docx"};
     private final String documentFolder;
     @MockBean

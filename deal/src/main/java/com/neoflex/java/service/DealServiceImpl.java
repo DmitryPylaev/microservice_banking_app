@@ -89,7 +89,7 @@ public class DealServiceImpl implements DealService {
         if (optionalApplication.isEmpty()) return CreditDTO.builder().build();
         Application application = optionalApplication.get();
         CreditDTO creditDto = conveyorAccessService.getCreditDtoFromRemote(request, application);
-        actualizeClient(request.getEmployment(), application);
+        actualizeClient(request, application);
         actualizeCredit(CreditStatus.CALCULATED, creditMapper.mapCredit(creditDto), application);
         deniedCheck(application);
         return creditDto;
@@ -141,11 +141,17 @@ public class DealServiceImpl implements DealService {
         statusHistoryElementList.add(statusHistoryElement);
     }
 
-    private void actualizeClient(EmploymentDTO employmentDto, Application application) {
+    private void actualizeClient(FinishRegistrationRequestDTO request, Application application) {
         CustomLogger.logInfoClassAndMethod();
         Client client = application.getClient();
-        Employment employment = employmentMapper.mapEmploymentJSON(employmentDto);
+        client.setGender(request.getGender());
+        client.setMaritalStatus(request.getMaritalStatus());
+        Passport passport = client.getPassport();
+        passport.setIssueDate(request.getPassportIssueDate());
+        passport.setIssueBranch(request.getPassportIssueBranch());
+        Employment employment = employmentMapper.mapEmploymentJSON(request.getEmployment());
         client.setEmployment(employment);
+        client.setAccount(request.getAccount());
         clientRepository.save(client);
     }
 

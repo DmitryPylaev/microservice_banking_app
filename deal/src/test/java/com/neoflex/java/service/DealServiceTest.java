@@ -9,7 +9,7 @@ import com.neoflex.java.service.abstraction.ApplicationBuildService;
 import com.neoflex.java.service.abstraction.ConveyorAccessService;
 import com.neoflex.java.service.abstraction.DealService;
 import com.neoflex.java.service.abstraction.KafkaService;
-import com.neoflex.java.service.config.BaseTestcontainer;
+import com.neoflex.java.service.config.BaseTestContainer;
 import com.neoflex.java.service.kafka_config.KafkaProducerConfig;
 import com.neoflex.java.service.kafka_config.KafkaTopicConfig;
 import org.junit.jupiter.api.BeforeAll;
@@ -40,7 +40,7 @@ import static org.mockito.Mockito.when;
 @ComponentScan("com.neoflex.java")
 @EnableAutoConfiguration
 @SuppressWarnings("unused")
-class DealServiceTest extends BaseTestcontainer {
+class DealServiceTest extends BaseTestContainer {
     @MockBean
     private ApplicationBuildService applicationBuildService;
     @MockBean
