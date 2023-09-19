@@ -146,6 +146,7 @@ public class DealServiceImpl implements DealService {
         Client client = application.getClient();
         client.setGender(request.getGender());
         client.setMaritalStatus(request.getMaritalStatus());
+        client.setDependentAmount(request.getDependentAmount());
         Passport passport = client.getPassport();
         passport.setIssueDate(request.getPassportIssueDate());
         passport.setIssueBranch(request.getPassportIssueBranch());
