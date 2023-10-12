@@ -3,7 +3,7 @@ package com.neoflex.java.service;
 import com.neoflex.java.dto.EmploymentDTO;
 import com.neoflex.java.dto.PaymentScheduleElement;
 import com.neoflex.java.dto.ScoringDataDTO;
-import com.neoflex.java.enums.EmploymentStatus;
+import com.neoflex.java.dto.EmploymentStatus;
 import com.neoflex.java.service.abstraction.ScoringService;
 import com.neoflex.java.service.exception.CalculateScoringRateException;
 import com.neoflex.java.util.CustomLogger;

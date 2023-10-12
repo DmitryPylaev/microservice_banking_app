@@ -1,9 +1,9 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.*;
-import com.neoflex.java.enums.EmploymentPosition;
-import com.neoflex.java.enums.EmploymentStatus;
-import com.neoflex.java.enums.MaritalStatus;
+import com.neoflex.java.dto.EmploymentPosition;
+import com.neoflex.java.dto.EmploymentStatus;
+import com.neoflex.java.dto.MaritalStatus;
 import com.neoflex.java.service.abstraction.OffersService;
 import com.neoflex.java.service.abstraction.ScoringService;
 import org.junit.jupiter.api.Assertions;

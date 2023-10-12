@@ -2,7 +2,7 @@ package com.neoflex.java.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java.dto.PaymentScheduleElement;
-import com.neoflex.java.enums.CreditStatus;
+import com.neoflex.java.dto.CreditStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
