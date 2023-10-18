@@ -1,5 +1,4 @@
 [![codecov](https://codecov.io/gh/DmitryPylaev/microservice_banking_app/graph/badge.svg?token=4QEMW7QVNV)](https://codecov.io/gh/DmitryPylaev/microservice_banking_app)
-[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=DmitryPylaev_microservice_banking_app&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=DmitryPylaev_microservice_banking_app)
 [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=DmitryPylaev_microservice_banking_app&metric=reliability_rating)](https://sonarcloud.io/summary/new_code?id=DmitryPylaev_microservice_banking_app)
 [![Duplicated Lines (%)](https://sonarcloud.io/api/project_badges/measure?project=DmitryPylaev_microservice_banking_app&metric=duplicated_lines_density)](https://sonarcloud.io/summary/new_code?id=DmitryPylaev_microservice_banking_app)
 [![Bugs](https://sonarcloud.io/api/project_badges/measure?project=DmitryPylaev_microservice_banking_app&metric=bugs)](https://sonarcloud.io/summary/new_code?id=DmitryPylaev_microservice_banking_app)
