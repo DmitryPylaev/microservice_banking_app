@@ -32,6 +32,6 @@ public class ScoringDataDTO {
     private Integer dependentAmount;
     private EmploymentDTO employment;
     private String account;
-    private Boolean isInsuranceEnabled;
-    private Boolean isSalaryClient;
+    private boolean isInsuranceEnabled;
+    private boolean isSalaryClient;
 }

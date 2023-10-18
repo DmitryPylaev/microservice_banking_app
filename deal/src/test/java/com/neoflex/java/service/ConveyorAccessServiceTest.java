@@ -124,6 +124,8 @@ class ConveyorAccessServiceTest extends BaseTestContainer {
                 .term(TERM)
                 .monthlyPayment(MONTHLY_PAYMENT)
                 .rate(RATE)
+                .isInsuranceEnabled(false)
+                .isSalaryClient(false)
                 .build();
 
         application.setAppliedOffer(expectedAppliedOffer);

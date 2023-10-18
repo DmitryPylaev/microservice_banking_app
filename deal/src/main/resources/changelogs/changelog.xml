@@ -8,5 +8,6 @@
     <include file="create-table-credit.xml" relativeToChangelogFile="true"/>
     <include file="create-table-client.xml" relativeToChangelogFile="true"/>
     <include file="create-table-application.xml" relativeToChangelogFile="true"/>
+    <include file="create-table-account.xml" relativeToChangelogFile="true"/>
 
 </databaseChangeLog>

@@ -76,11 +76,13 @@
             </exclusions>
             <version>${docx4j.version}</version>
         </dependency>
+
         <dependency>
             <groupId>org.glassfish.jaxb</groupId>
             <artifactId>jaxb-runtime</artifactId>
             <version>${jaxb.version}</version>
         </dependency>
+
     </dependencies>
 
     <properties>

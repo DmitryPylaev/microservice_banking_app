@@ -1,11 +1,9 @@
 package com.neoflex.java.controller;
 
-import com.neoflex.java.dto.CreditDTO;
-import com.neoflex.java.dto.FinishRegistrationRequestDTO;
-import com.neoflex.java.dto.LoanApplicationRequestDTO;
-import com.neoflex.java.dto.LoanOfferDTO;
+import com.neoflex.java.dto.*;
 import com.neoflex.java.model.Application;
 import com.neoflex.java.service.abstraction.DealService;
+import com.neoflex.java.service.abstraction.AccountService;
 import com.neoflex.java.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -25,6 +23,7 @@ import java.util.List;
 @Tag(name = "DealController", description = "Контроллер микросервиса сделки")
 public class DealController {
     private DealService dealService;
+    private AccountService accountService;
 
     @Operation(summary = "Расчёт возможных условий кредита")
     @PostMapping(value = "/application", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -48,5 +47,12 @@ public class DealController {
         CustomLogger.logInfoClassAndMethod();
         CustomLogger.logInfoRequest(request);
         return dealService.finishCalculateCredit(request, id);
+    }
+
+    @Operation(summary = "Запрос авторизации")
+    @GetMapping(value = "/account/{username}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public AccountDTO getAccountDTO(@RequestParam String username) {
+        CustomLogger.logInfoClassAndMethod();
+        return accountService.getAccountDTO(username);
     }
 }

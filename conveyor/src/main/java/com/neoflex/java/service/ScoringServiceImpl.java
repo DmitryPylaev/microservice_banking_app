@@ -155,8 +155,8 @@ public class ScoringServiceImpl implements ScoringService {
         log.info("Отказа не произошло");
         if (scoringDataDTO.getDependentAmount() > 1)
             rate = rate.subtract(BigDecimal.valueOf(dependentAmountRateDiscount));
-        if (scoringDataDTO.getIsInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
-        if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
+        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
+        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
 
         switch (employmentDTO.getPosition()) {
             case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
