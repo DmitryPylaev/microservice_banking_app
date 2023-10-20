@@ -3,9 +3,9 @@ package com.neoflex.java.service;
 import com.neoflex.java.dto.*;
 import com.neoflex.java.service.abstraction.OffersService;
 import com.neoflex.java.service.abstraction.ScoringService;
+import com.neoflex.java.service.properties.ScoringProperties;
 import com.neoflex.java.util.CustomLogger;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -15,17 +15,10 @@ import java.util.List;
 import java.util.stream.Stream;
 
 @Service
+@AllArgsConstructor
 public class OffersServiceImpl implements OffersService {
-
     private final ScoringService scoringService;
-    private final Integer denyRate;
-
-    @Autowired
-    public OffersServiceImpl(ScoringService scoringService,
-                             @Value("${denyRate}") Integer denyRate) {
-        this.scoringService = scoringService;
-        this.denyRate = denyRate;
-    }
+    private final ScoringProperties scoringProperties;
 
     @Override
     public List<LoanOfferDTO> createPrescoringOffers(LoanApplicationRequestDTO request) {
@@ -70,7 +63,7 @@ public class OffersServiceImpl implements OffersService {
 
         BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
 
-        if (rate.equals(BigDecimal.valueOf(denyRate))) return CreditDTO.builder()
+        if (rate.equals(BigDecimal.valueOf(scoringProperties.getDenyRate()))) return CreditDTO.builder()
                 .amount(amount)
                 .term(term)
                 .monthlyPayment(BigDecimal.ZERO)

@@ -6,9 +6,10 @@ import com.neoflex.java.dto.ScoringDataDTO;
 import com.neoflex.java.enums.EmploymentStatus;
 import com.neoflex.java.service.abstraction.ScoringService;
 import com.neoflex.java.service.exception.CalculateScoringRateException;
+import com.neoflex.java.service.properties.ScoringProperties;
 import com.neoflex.java.util.CustomLogger;
+import lombok.AllArgsConstructor;
 import lombok.extern.log4j.Log4j2;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
@@ -20,70 +21,26 @@ import java.util.List;
 
 @Service
 @Log4j2
+@AllArgsConstructor
 public class ScoringServiceImpl implements ScoringService {
     public static final int MONTH_OF_YEAR = 12;
     public static final int IN_PERCENT_CONVERT_CONSTANT = 100;
-    private final MathContext bigdecimalPrecision = new MathContext(7);
-    private final Double baseRate;
-    private final Integer denyRate;
-    private final Integer insurancePrice;
-    private final Double insuranceRateDiscount;
-    private final Double salaryClientRateDiscount;
-    private final Integer minAge;
-    private final Integer maxAge;
-    private final Integer salaryMinCoefficient;
-    private final Integer workExperienceTotalMin;
-    private final Integer workExperienceCurrentMin;
-    private final Double singleRateDiscount;
-    private final Double marriedRateDiscount;
-    private final Double middleRateDiscount;
-    private final Double seniorRateDiscount;
-    private final Double dependentAmountRateDiscount;
+    private static final MathContext bigdecimalPrecision = new MathContext(7);
 
-    public ScoringServiceImpl(@Value("${baseRate}") Double baseRate,
-                              @Value("${denyRate}") Integer denyRate,
-                              @Value("${insurancePrice}") Integer insurancePrice,
-                              @Value("${insuranceRateDiscount}") Double insuranceRateDiscount,
-                              @Value("${salaryClientRateDiscount}") Double salaryClientRateDiscount,
-                              @Value("${minAge}") Integer minAge,
-                              @Value("${maxAge}") Integer maxAge,
-                              @Value("${salaryMinCoefficient}") Integer salaryMinCoefficient,
-                              @Value("${workExperienceTotalMin}") Integer workExperienceTotalMin,
-                              @Value("${workExperienceCurrentMin}") Integer workExperienceCurrentMin,
-                              @Value("${singledRateDiscount}") Double singleRateDiscount,
-                              @Value("${marriedRateDiscount}") Double marriedRateDiscount,
-                              @Value("${middleRateDiscount}") Double middleRateDiscount,
-                              @Value("${seniorRateDiscount}") Double seniorRateDiscount,
-                              @Value("${dependentAmountRateDiscount}") Double dependentAmountRateDiscount) {
-        this.baseRate = baseRate;
-        this.denyRate = denyRate;
-        this.insurancePrice = insurancePrice;
-        this.insuranceRateDiscount = insuranceRateDiscount;
-        this.salaryClientRateDiscount = salaryClientRateDiscount;
-        this.minAge = minAge;
-        this.maxAge = maxAge;
-        this.salaryMinCoefficient = salaryMinCoefficient;
-        this.workExperienceTotalMin = workExperienceTotalMin;
-        this.workExperienceCurrentMin = workExperienceCurrentMin;
-        this.singleRateDiscount = singleRateDiscount;
-        this.marriedRateDiscount = marriedRateDiscount;
-        this.middleRateDiscount = middleRateDiscount;
-        this.seniorRateDiscount = seniorRateDiscount;
-        this.dependentAmountRateDiscount = dependentAmountRateDiscount;
-    }
+    private final ScoringProperties scoringProperties;
 
     @Override
     public BigDecimal evaluateTotalAmount(BigDecimal amount, boolean isInsuranceEnabled) {
         CustomLogger.logInfoClassAndMethod();
-        return (isInsuranceEnabled) ? amount.subtract(BigDecimal.valueOf(insurancePrice)) : amount;
+        return (isInsuranceEnabled) ? amount.subtract(BigDecimal.valueOf(scoringProperties.getInsurancePrice())) : amount;
     }
 
     @Override
     public BigDecimal calculatePrescoringRate(boolean isInsuranceEnabled, boolean isSalaryClient) {
         CustomLogger.logInfoClassAndMethod();
-        BigDecimal rate = BigDecimal.valueOf(baseRate);
-        if (isInsuranceEnabled) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
-        if (isSalaryClient) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
+        BigDecimal rate = BigDecimal.valueOf(scoringProperties.getBaseRate());
+        if (isInsuranceEnabled) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount()));
+        if (isSalaryClient) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSalaryClientRateDiscount()));
         return rate;
     }
 
@@ -100,7 +57,7 @@ public class ScoringServiceImpl implements ScoringService {
     public BigDecimal calculatePsk(BigDecimal amount, BigDecimal monthlyPayment, Integer term, boolean isInsuranceEnabled) {
         CustomLogger.logInfoClassAndMethod();
         BigDecimal overpayment = monthlyPayment.multiply(BigDecimal.valueOf(term));
-        overpayment = (isInsuranceEnabled) ? overpayment.add(BigDecimal.valueOf(insurancePrice)) : overpayment;
+        overpayment = (isInsuranceEnabled) ? overpayment.add(BigDecimal.valueOf(scoringProperties.getInsurancePrice())) : overpayment;
         BigDecimal termYear = BigDecimal.valueOf(term).divide(BigDecimal.valueOf(MONTH_OF_YEAR), bigdecimalPrecision);
         return overpayment.divide(amount, bigdecimalPrecision)
                 .subtract(BigDecimal.ONE)
@@ -133,38 +90,38 @@ public class ScoringServiceImpl implements ScoringService {
     @Override
     public BigDecimal calculateScoringRate(ScoringDataDTO scoringDataDTO) {
         CustomLogger.logInfoClassAndMethod();
-        BigDecimal rate = BigDecimal.valueOf(baseRate);
+        BigDecimal rate = BigDecimal.valueOf(scoringProperties.getBaseRate());
         EmploymentDTO employmentDTO = scoringDataDTO.getEmployment();
         try {
             if (employmentDTO.getEmploymentStatus().equals(EmploymentStatus.UNEMPLOYED))
                 throw new CalculateScoringRateException("Безработный. Отказ");
-            if (scoringDataDTO.getAmount().compareTo(employmentDTO.getSalary().multiply(BigDecimal.valueOf(salaryMinCoefficient))) > 0)
+            if (scoringDataDTO.getAmount().compareTo(employmentDTO.getSalary().multiply(BigDecimal.valueOf(scoringProperties.getSalaryMinCoefficient()))) > 0)
                 throw new CalculateScoringRateException("Низкий доход. Отказ");
-            if (employmentDTO.getWorkExperienceTotal() < workExperienceTotalMin)
+            if (employmentDTO.getWorkExperienceTotal() < scoringProperties.getWorkExperienceTotalMin())
                 throw new CalculateScoringRateException("Общий стаж недостаточен");
-            if (employmentDTO.getWorkExperienceCurrent() < workExperienceCurrentMin)
+            if (employmentDTO.getWorkExperienceCurrent() < scoringProperties.getWorkExperienceCurrentMin())
                 throw new CalculateScoringRateException("Текущий стаж недостаточен");
             long age = ChronoUnit.YEARS.between(scoringDataDTO.getBirthdate(), LocalDate.now());
-            if (age < minAge) throw new CalculateScoringRateException("Нет 18 лет");
-            if (age > maxAge) throw new CalculateScoringRateException("Больше 60 лет");
+            if (age < scoringProperties.getMinAge()) throw new CalculateScoringRateException("Нет 18 лет");
+            if (age > scoringProperties.getMaxAge()) throw new CalculateScoringRateException("Больше 60 лет");
         } catch (CalculateScoringRateException e) {
             log.info("Отказ в кредите. " + e.getMessage());
-            return BigDecimal.valueOf(denyRate);
+            return BigDecimal.valueOf(scoringProperties.getDenyRate());
         }
 
         log.info("Отказа не произошло");
         if (scoringDataDTO.getDependentAmount() > 1)
-            rate = rate.subtract(BigDecimal.valueOf(dependentAmountRateDiscount));
-        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(insuranceRateDiscount));
-        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(salaryClientRateDiscount));
+            rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getDependentAmountRateDiscount()));
+        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount()));
+        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSalaryClientRateDiscount()));
 
         switch (employmentDTO.getPosition()) {
-            case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(middleRateDiscount));
-            case TOP_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(seniorRateDiscount));
+            case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getMiddleRateDiscount()));
+            case TOP_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSeniorRateDiscount()));
         }
         switch (scoringDataDTO.getMaritalStatus()) {
-            case SINGLE -> rate = rate.subtract(BigDecimal.valueOf(singleRateDiscount));
-            case MARRIED -> rate = rate.subtract(BigDecimal.valueOf(marriedRateDiscount));
+            case SINGLE -> rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSingleRateDiscount()));
+            case MARRIED -> rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getMarriedRateDiscount()));
         }
         switch (scoringDataDTO.getGender()) {
             case MALE -> log.info("Пол клиента: мужской");

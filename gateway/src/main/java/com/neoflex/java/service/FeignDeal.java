@@ -1,13 +1,11 @@
 package com.neoflex.java.service;
 
+import com.neoflex.java.dto.AccountDTO;
 import com.neoflex.java.dto.CreditDTO;
 import com.neoflex.java.dto.FinishRegistrationRequestDTO;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
 @FeignClient(value = "deal", url = "${deal.destination}")
 public interface FeignDeal {
@@ -23,4 +21,7 @@ public interface FeignDeal {
 
     @PostMapping(value = "/document/{id}/code")
     void acceptCode(@RequestParam long id);
+
+    @GetMapping(value = "/account/{username}")
+    AccountDTO getAccountByUsername(@RequestParam String username);
 }

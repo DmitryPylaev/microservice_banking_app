@@ -1,16 +1,17 @@
 package com.neoflex.java.service;
 
+import com.neoflex.java.app.ConveyorApplication;
 import com.neoflex.java.dto.*;
 import com.neoflex.java.enums.EmploymentPosition;
 import com.neoflex.java.enums.EmploymentStatus;
 import com.neoflex.java.enums.MaritalStatus;
 import com.neoflex.java.service.abstraction.OffersService;
 import com.neoflex.java.service.abstraction.ScoringService;
+import com.neoflex.java.service.properties.ScoringProperties;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.ComponentScan;
@@ -25,38 +26,22 @@ import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest(classes = {OffersServiceImpl.class})
+@SpringBootTest(classes = {ConveyorApplication.class})
 @ComponentScan("com.neoflex.java")
 class OffersServiceTest {
-
-    private final Double baseRate;
-    private final Integer denyRate;
-    private final Integer insurancePrice;
-    private final Double insuranceRateDiscount;
-    private final Double salaryClientRateDiscount;
-
-    public OffersServiceTest(@Value("${baseRate}") Double baseRate,
-                             @Value("${denyRate}") Integer denyRate,
-                             @Value("${insurancePrice}") Integer insurancePrice,
-                             @Value("${insuranceRateDiscount}") Double insuranceRateDiscount,
-                             @Value("${salaryClientRateDiscount}") Double salaryClientRateDiscount) {
-        this.baseRate = baseRate;
-        this.denyRate = denyRate;
-        this.insurancePrice = insurancePrice;
-        this.insuranceRateDiscount = insuranceRateDiscount;
-        this.salaryClientRateDiscount = salaryClientRateDiscount;
-    }
-
     @MockBean
     ScoringService scoringService;
 
     @Autowired
     private OffersService offersService;
 
+    @Autowired
+    private ScoringProperties scoringProperties;
+
     @Test
     void getPreparedOffers() {
         BigDecimal amount = BigDecimal.valueOf(300000);
-        BigDecimal amountWithInsurance = amount.subtract(BigDecimal.valueOf(insurancePrice));
+        BigDecimal amountWithInsurance = amount.subtract(BigDecimal.valueOf(scoringProperties.getInsurancePrice()));
 
         LoanApplicationRequestDTO dto = LoanApplicationRequestDTO.builder()
                 .amount(amount)
@@ -69,12 +54,12 @@ class OffersServiceTest {
                 .passportNumber("576687")
                 .build();
 
-        when(scoringService.calculatePrescoringRate(anyBoolean(), anyBoolean())).thenReturn(BigDecimal.valueOf(baseRate)
-                        .subtract(BigDecimal.valueOf(insuranceRateDiscount + salaryClientRateDiscount)),
-                BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(insuranceRateDiscount)),
-                BigDecimal.valueOf(baseRate).subtract(BigDecimal.valueOf(salaryClientRateDiscount)),
-                BigDecimal.valueOf(baseRate));
-        when(scoringService.calculateMonthlyPayment(amount, 18, BigDecimal.valueOf(baseRate))).thenReturn(BigDecimal.valueOf(18714.44));
+        when(scoringService.calculatePrescoringRate(anyBoolean(), anyBoolean())).thenReturn(BigDecimal.valueOf(scoringProperties.getBaseRate())
+                        .subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount() + scoringProperties.getSalaryClientRateDiscount())),
+                BigDecimal.valueOf(scoringProperties.getBaseRate()).subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount())),
+                BigDecimal.valueOf(scoringProperties.getBaseRate()).subtract(BigDecimal.valueOf(scoringProperties.getSalaryClientRateDiscount())),
+                BigDecimal.valueOf(scoringProperties.getBaseRate()));
+        when(scoringService.calculateMonthlyPayment(amount, 18, BigDecimal.valueOf(scoringProperties.getBaseRate()))).thenReturn(BigDecimal.valueOf(18714.44));
         when(scoringService.evaluateTotalAmount(amount, false)).thenReturn(amount);
         when(scoringService.evaluateTotalAmount(amount, true)).thenReturn(amountWithInsurance);
 
@@ -138,6 +123,6 @@ class OffersServiceTest {
         when(scoringService.calculateScoringRate(scoringDataDTO)).thenReturn(BigDecimal.valueOf(999));
 
         creditDTO = offersService.createCreditOffer(scoringDataDTO);
-        assertEquals(BigDecimal.valueOf(denyRate), creditDTO.getRate());
+        assertEquals(BigDecimal.valueOf(scoringProperties.getDenyRate()), creditDTO.getRate());
     }
 }
