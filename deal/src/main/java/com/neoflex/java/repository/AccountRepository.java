@@ -1,7 +1,7 @@
 package com.neoflex.java.repository;
 
 import com.neoflex.java.model.Account;
-import com.neoflex.java.enums.AccountStatus;
+import com.neoflex.java.dto.AccountStatus;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,7 +1,7 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.EmailMessage;
-import com.neoflex.java.enums.EmailMessageTheme;
+import com.neoflex.java.dto.EmailMessageTheme;
 import com.neoflex.java.model.Application;
 import com.neoflex.java.service.abstraction.KafkaService;
 import com.neoflex.java.util.CustomLogger;

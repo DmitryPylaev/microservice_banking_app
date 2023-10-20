@@ -1,7 +1,7 @@
 package com.neoflex.java.model;
 
-import com.neoflex.java.enums.EmploymentPosition;
-import com.neoflex.java.enums.EmploymentStatus;
+import com.neoflex.java.dto.EmploymentPosition;
+import com.neoflex.java.dto.EmploymentStatus;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

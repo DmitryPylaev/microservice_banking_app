@@ -1,6 +1,6 @@
 package com.neoflex.java.model;
 
-import com.neoflex.java.enums.AccountStatus;
+import com.neoflex.java.dto.AccountStatus;
 import jakarta.persistence.*;
 import lombok.*;
 

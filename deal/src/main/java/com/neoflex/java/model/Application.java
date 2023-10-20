@@ -2,7 +2,7 @@ package com.neoflex.java.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.neoflex.java.dto.LoanOfferDTO;
-import com.neoflex.java.enums.ApplicationStatus;
+import com.neoflex.java.dto.ApplicationStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

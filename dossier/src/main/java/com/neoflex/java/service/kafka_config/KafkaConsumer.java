@@ -18,11 +18,11 @@ public class KafkaConsumer {
     private EmailSender mailSender;
     private static final String[] ATTACHED_FILES = {"Кредитный договор.docx", "Анкета.docx", "График платежей.docx"};
 
-    @KafkaListener(topics = {"finish-registration",
-            "create-documents",
-            "send-ses",
-            "credit-issued",
-            "application-denied"},
+    @KafkaListener(topics = {"FINISH_REGISTRATION",
+            "CREATE_DOCUMENTS",
+            "SEND_SES",
+            "CREDIT_ISSUED",
+            "APPLICATION_DENIED"},
             groupId = "dossierGroup",
             containerFactory = "emailKafkaListenerContainerFactory")
     public void handleEmail(EmailMessage emailMessage) throws MessagingException {
@@ -31,7 +31,7 @@ public class KafkaConsumer {
         log.info("Mail send: " + emailMessage);
     }
 
-    @KafkaListener(topics = {"send-documents"},
+    @KafkaListener(topics = {"SEND_DOCUMENTS"},
             groupId = "dossierGroup",
             containerFactory = "emailKafkaListenerContainerFactory")
     public void handleEmailWithAttachments(EmailMessage emailMessage) throws MessagingException {

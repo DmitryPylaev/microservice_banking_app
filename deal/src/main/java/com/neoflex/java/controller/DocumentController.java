@@ -1,7 +1,7 @@
 package com.neoflex.java.controller;
 
-import com.neoflex.java.enums.ApplicationStatus;
-import com.neoflex.java.enums.EmailMessageTheme;
+import com.neoflex.java.dto.ApplicationStatus;
+import com.neoflex.java.dto.EmailMessageTheme;
 import com.neoflex.java.service.abstraction.DealService;
 import com.neoflex.java.util.CustomLogger;
 import io.swagger.v3.oas.annotations.Operation;

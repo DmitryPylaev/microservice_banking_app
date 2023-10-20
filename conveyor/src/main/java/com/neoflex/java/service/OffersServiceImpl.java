@@ -58,8 +58,8 @@ public class OffersServiceImpl implements OffersService {
         CustomLogger.logInfoClassAndMethod();
         BigDecimal amount = scoringDataDTO.getAmount();
         Integer term = scoringDataDTO.getTerm();
-        Boolean isInsuranceEnabled = scoringDataDTO.isInsuranceEnabled();
-        Boolean isSalaryClient = scoringDataDTO.isSalaryClient();
+        boolean isInsuranceEnabled = scoringDataDTO.getIsInsuranceEnabled();
+        boolean isSalaryClient = scoringDataDTO.getIsSalaryClient();
 
         BigDecimal rate = scoringService.calculateScoringRate(scoringDataDTO);
 

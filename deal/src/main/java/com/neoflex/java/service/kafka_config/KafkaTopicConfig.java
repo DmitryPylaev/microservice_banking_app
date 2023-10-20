@@ -26,31 +26,31 @@ public class KafkaTopicConfig {
 
     @Bean
     public NewTopic finishRegistration() {
-        return new NewTopic("finish-registration", 1, (short) 1);
+        return new NewTopic("FINISH_REGISTRATION", 1, (short) 1);
     }
 
     @Bean
     public NewTopic createDocuments() {
-        return new NewTopic("create-documents", 1, (short) 1);
+        return new NewTopic("CREATE_DOCUMENTS", 1, (short) 1);
     }
 
     @Bean
     public NewTopic sendDocuments() {
-        return new NewTopic("send-documents", 1, (short) 1);
+        return new NewTopic("SEND_DOCUMENTS", 1, (short) 1);
     }
 
     @Bean
     public NewTopic sendSes() {
-        return new NewTopic("send-ses", 1, (short) 1);
+        return new NewTopic("SEND_SES", 1, (short) 1);
     }
 
     @Bean
     public NewTopic creditIssued() {
-        return new NewTopic("credit-issued", 1, (short) 1);
+        return new NewTopic("CREDIT_ISSUED", 1, (short) 1);
     }
 
     @Bean
     public NewTopic applicationDenied() {
-        return new NewTopic("application-denied", 1, (short) 1);
+        return new NewTopic("APPLICATION_DENIED", 1, (short) 1);
     }
 }

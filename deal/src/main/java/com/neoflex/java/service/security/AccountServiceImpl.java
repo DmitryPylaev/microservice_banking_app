@@ -1,7 +1,7 @@
 package com.neoflex.java.service.security;
 
 import com.neoflex.java.dto.AccountDTO;
-import com.neoflex.java.enums.AccountStatus;
+import com.neoflex.java.dto.AccountStatus;
 import com.neoflex.java.model.Account;
 import com.neoflex.java.repository.AccountRepository;
 import com.neoflex.java.service.abstraction.AccountService;

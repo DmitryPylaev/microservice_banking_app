@@ -1,7 +1,6 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.*;
-import com.neoflex.java.enums.*;
 import com.neoflex.java.model.*;
 import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.repository.ClientRepository;
