@@ -3,7 +3,7 @@ package com.neoflex.java.service;
 import com.neoflex.java.dto.EmploymentDTO;
 import com.neoflex.java.dto.PaymentScheduleElement;
 import com.neoflex.java.dto.ScoringDataDTO;
-import com.neoflex.java.enums.EmploymentStatus;
+import com.neoflex.java.dto.EmploymentStatus;
 import com.neoflex.java.service.abstraction.ScoringService;
 import com.neoflex.java.service.exception.CalculateScoringRateException;
 import com.neoflex.java.service.properties.ScoringProperties;
@@ -112,8 +112,8 @@ public class ScoringServiceImpl implements ScoringService {
         log.info("Отказа не произошло");
         if (scoringDataDTO.getDependentAmount() > 1)
             rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getDependentAmountRateDiscount()));
-        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount()));
-        if (scoringDataDTO.isInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSalaryClientRateDiscount()));
+        if (scoringDataDTO.getIsInsuranceEnabled()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getInsuranceRateDiscount()));
+        if (scoringDataDTO.getIsSalaryClient()) rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getSalaryClientRateDiscount()));
 
         switch (employmentDTO.getPosition()) {
             case MID_MANAGER -> rate = rate.subtract(BigDecimal.valueOf(scoringProperties.getMiddleRateDiscount()));

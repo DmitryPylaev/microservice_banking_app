@@ -1,8 +1,8 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.LoanApplicationRequestDTO;
-import com.neoflex.java.enums.ApplicationStatus;
-import com.neoflex.java.enums.ChangeType;
+import com.neoflex.java.dto.ApplicationStatus;
+import com.neoflex.java.dto.ChangeType;
 import com.neoflex.java.model.*;
 import com.neoflex.java.service.abstraction.DocumentService;
 import com.neoflex.java.service.abstraction.KafkaService;

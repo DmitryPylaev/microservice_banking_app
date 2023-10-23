@@ -1,10 +1,10 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.*;
-import com.neoflex.java.enums.ApplicationStatus;
-import com.neoflex.java.enums.ChangeType;
-import com.neoflex.java.enums.CreditStatus;
-import com.neoflex.java.enums.EmailMessageTheme;
+import com.neoflex.java.dto.ApplicationStatus;
+import com.neoflex.java.dto.ChangeType;
+import com.neoflex.java.dto.CreditStatus;
+import com.neoflex.java.dto.EmailMessageTheme;
 import com.neoflex.java.model.*;
 import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.repository.ClientRepository;

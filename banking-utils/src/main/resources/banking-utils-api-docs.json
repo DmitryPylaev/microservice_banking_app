@@ -1,0 +1,385 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "banking models",
+    "description": "Neoflex 2023. Прототип банка. Модели и DTO",
+    "version": "v0.1"
+  },
+  "paths": {},
+  "components": {
+    "schemas": {
+      "LoanOfferDTO": {
+        "type": "object",
+        "properties": {
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "requestedAmount": {
+            "type": "number"
+          },
+          "totalAmount": {
+            "type": "number"
+          },
+          "term": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monthlyPayment": {
+            "type": "number"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "isInsuranceEnabled": {
+            "type": "boolean"
+          },
+          "isSalaryClient": {
+            "type": "boolean"
+          }
+        },
+        "description": "Предложение по кредиту после прескоринга"
+      },
+      "EmploymentDTO": {
+        "type": "object",
+        "properties": {
+          "employmentStatus": {
+            "$ref": "#/components/schemas/EmploymentStatus"
+          },
+          "employerInn": {
+            "type": "string"
+          },
+          "salary": {
+            "type": "number"
+          },
+          "position": {
+            "$ref": "#/components/schemas/EmploymentPosition"
+          },
+          "workExperienceTotal": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "workExperienceCurrent": {
+            "type": "integer",
+            "format": "int32"
+          }
+        },
+        "description": "Информация о занятости клиента"
+      },
+      "FinishRegistrationRequestDTO": {
+        "type": "object",
+        "properties": {
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "maritalStatus": {
+            "$ref": "#/components/schemas/MaritalStatus"
+          },
+          "dependentAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "passportIssueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "passportIssueBranch": {
+            "type": "string"
+          },
+          "employment": {
+            "$ref": "#/components/schemas/EmploymentDTO"
+          },
+          "account": {
+            "type": "string"
+          }
+        },
+        "description": "Запрос на завершение регистрации"
+      },
+      "CreditDTO": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "term": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "monthlyPayment": {
+            "type": "number"
+          },
+          "rate": {
+            "type": "number"
+          },
+          "psk": {
+            "type": "number"
+          },
+          "isInsuranceEnabled": {
+            "type": "boolean"
+          },
+          "isSalaryClient": {
+            "type": "boolean"
+          },
+          "paymentSchedule": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PaymentScheduleElement"
+            }
+          }
+        },
+        "description": "Параметры кредита"
+      },
+      "PaymentScheduleElement": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "date": {
+            "type": "string",
+            "format": "date",
+            "x-field-extra-annotation": "@com.fasterxml.jackson.databind.annotation.JsonSerialize(using = com.fasterxml.jackson.datatype.jsr310.ser.LocalDateSerializer.class) @com.fasterxml.jackson.databind.annotation.JsonDeserialize(using = com.fasterxml.jackson.datatype.jsr310.deser.LocalDateDeserializer.class)"
+          },
+          "totalPayment": {
+            "type": "number"
+          },
+          "interestPayment": {
+            "type": "number"
+          },
+          "debtPayment": {
+            "type": "number"
+          },
+          "remainingDebt": {
+            "type": "number"
+          }
+        },
+        "description": "График платежей"
+      },
+      "LoanApplicationRequestDTO": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "term": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date"
+          },
+          "passportSeries": {
+            "type": "string"
+          },
+          "passportNumber": {
+            "type": "string"
+          }
+        },
+        "description": "Первичный запрос на кредит"
+      },
+      "ScoringDataDTO": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "number"
+          },
+          "term": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "firstName": {
+            "type": "string"
+          },
+          "lastName": {
+            "type": "string"
+          },
+          "middleName": {
+            "type": "string"
+          },
+          "gender": {"$ref": "#/components/schemas/Gender"
+          },
+          "birthdate": {
+            "type": "string",
+            "format": "date"
+          },
+          "passportSeries": {
+            "type": "string"
+          },
+          "passportNumber": {
+            "type": "string"
+          },
+          "passportIssueDate": {
+            "type": "string",
+            "format": "date"
+          },
+          "passportIssueBranch": {
+            "type": "string"
+          },
+          "maritalStatus": {
+            "$ref": "#/components/schemas/MaritalStatus"
+          },
+          "dependentAmount": {
+            "type": "integer",
+            "format": "int32"
+          },
+          "employment": {
+            "$ref": "#/components/schemas/EmploymentDTO"
+          },
+          "account": {
+            "type": "string"
+          },
+          "isInsuranceEnabled": {
+            "type": "boolean"
+          },
+          "isSalaryClient": {
+            "type": "boolean"
+          }
+        },
+        "description": "Запрос на кредит для скоринга"
+      },
+      "ApplicationStatusHistoryDTO": {
+        "type": "object",
+        "properties": {
+          "applicationStatus": {
+            "$ref": "#/components/schemas/ApplicationStatus"
+          },
+          "time": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "changeType": {
+            "$ref": "#/components/schemas/ChangeType"
+          }
+        }
+      },
+      "EmailMessage": {
+        "type": "object",
+        "properties": {
+          "address": {
+            "type": "string"
+          },
+          "emailMessageTheme": {
+            "$ref": "#/components/schemas/EmailMessageTheme"
+          },
+          "applicationId": {
+            "type": "integer",
+            "format": "int64"
+          }
+        }
+      },
+      "ApplicationStatus": {
+        "type": "string",
+        "enum": [
+          "PREAPPROVAL",
+          "APPROVED",
+          "CC_DENIED",
+          "CC_APPROVED",
+          "PREPARE_DOCUMENTS",
+          "DOCUMENT_CREATED",
+          "CLIENT_DENIED",
+          "DOCUMENT_SIGNED",
+          "CREDIT_ISSUED"
+        ]
+      },
+      "ChangeType": {
+        "type": "string",
+        "enum": [
+          "AUTOMATIC",
+          "MANUAL"
+        ]
+      },
+      "CreditStatus": {
+        "type": "string",
+        "enum": [
+          "CALCULATED",
+          "ISSUED"
+        ]
+      },
+      "EmailMessageTheme": {
+        "type": "string",
+        "enum": [
+          "FINISH_REGISTRATION",
+          "CREATE_DOCUMENTS",
+          "SEND_DOCUMENTS",
+          "SEND_SES",
+          "CREDIT_ISSUED",
+          "APPLICATION_DENIED"
+        ]
+      },
+      "EmploymentPosition": {
+        "type": "string",
+        "enum": [
+          "WORKER",
+          "MID_MANAGER",
+          "TOP_MANAGER",
+          "OWNER"
+        ]
+      },
+      "EmploymentStatus": {
+        "type": "string",
+        "enum": [
+          "UNEMPLOYED",
+          "SELF_EMPLOYED",
+          "EMPLOYED",
+          "BUSINESS_OWNER"
+        ]
+      },
+      "Gender": {
+        "type": "string",
+        "enum": [
+          "MALE",
+          "FEMALE",
+          "NON_BINARY"
+        ]
+      },
+      "MaritalStatus": {
+        "type": "string",
+        "enum": [
+          "MARRIED",
+          "DIVORCED",
+          "SINGLE",
+          "WIDOW_WIDOWER"
+        ]
+      },
+      "AccountStatus": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "REMOVED"
+        ]
+      },
+      "AccountDTO": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "format": "int64"
+          },
+          "username": {
+            "type": "string"
+          },
+          "password": {
+            "type": "string"
+          },
+          "accountStatus": {
+            "$ref": "#/components/schemas/AccountStatus"
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,8 +1,8 @@
 package com.neoflex.java.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.neoflex.java.enums.Gender;
-import com.neoflex.java.enums.MaritalStatus;
+import com.neoflex.java.dto.Gender;
+import com.neoflex.java.dto.MaritalStatus;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;

@@ -8,4 +8,34 @@
     </parent>
     <artifactId>banking-utils</artifactId>
     <name>banking-utils</name>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.openapitools</groupId>
+                <artifactId>openapi-generator-maven-plugin</artifactId>
+                <version>${openapi-generator.vervion}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>generate</goal>
+                        </goals>
+                        <configuration>
+                            <inputSpec>
+                                ${project.basedir}/src/main/resources/banking-utils-api-docs.json
+                            </inputSpec>
+                            <generatorName>spring</generatorName>
+                            <apiPackage>com.neoflex.java.api</apiPackage>
+                            <modelPackage>com.neoflex.java.dto</modelPackage>
+                            <supportingFilesToGenerate>false</supportingFilesToGenerate>
+                            <configOptions>
+                                <!--suppress UnresolvedMavenProperty -->
+                                <additionalModelTypeAnnotations>@lombok.Data @lombok.Builder @lombok.NoArgsConstructor @lombok.AllArgsConstructor</additionalModelTypeAnnotations>
+                            </configOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -4,8 +4,8 @@ import com.neoflex.java.dto.CreditDTO;
 import com.neoflex.java.dto.FinishRegistrationRequestDTO;
 import com.neoflex.java.dto.LoanApplicationRequestDTO;
 import com.neoflex.java.dto.LoanOfferDTO;
-import com.neoflex.java.enums.ApplicationStatus;
-import com.neoflex.java.enums.ChangeType;
+import com.neoflex.java.dto.ApplicationStatus;
+import com.neoflex.java.dto.ChangeType;
 import com.neoflex.java.model.Application;
 import com.neoflex.java.model.Client;
 import com.neoflex.java.model.Passport;
@@ -124,8 +124,6 @@ class ConveyorAccessServiceTest extends BaseTestContainer {
                 .term(TERM)
                 .monthlyPayment(MONTHLY_PAYMENT)
                 .rate(RATE)
-                .isInsuranceEnabled(false)
-                .isSalaryClient(false)
                 .build();
 
         application.setAppliedOffer(expectedAppliedOffer);
