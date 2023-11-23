@@ -210,7 +210,8 @@
           "middleName": {
             "type": "string"
           },
-          "gender": {"$ref": "#/components/schemas/Gender"
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
           },
           "birthdate": {
             "type": "string",
@@ -377,6 +378,68 @@
           },
           "accountStatus": {
             "$ref": "#/components/schemas/AccountStatus"
+          }
+        }
+      },
+      "AuditActionType": {
+        "type": "string",
+        "enum": [
+          "START",
+          "SUCCESS",
+          "FAILURE"
+        ]
+      },
+      "ServiceEnum": {
+        "type": "string",
+        "enum": [
+          "APPLICATION",
+          "DEAL",
+          "CONVEYOR",
+          "DOSSIER"
+        ]
+      },
+      "AuditDTO": {
+        "type": "object",
+        "properties": {
+          "uuid": {
+            "type": "string",
+            "format": "uuid"
+          },
+          "auditActionType": {
+            "$ref": "#/components/schemas/AuditActionType"
+          },
+          "service": {
+            "$ref": "#/components/schemas/ServiceEnum"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "FindApplicationDTO": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "$ref": "#/components/schemas/ApplicationStatus"
+          },
+          "maritalStatus": {
+            "$ref": "#/components/schemas/MaritalStatus"
+          },
+          "gender": {
+            "$ref": "#/components/schemas/Gender"
+          },
+          "isInsuranceEnabled": {
+            "type": "boolean"
+          },
+          "isSalaryClient": {
+            "type": "boolean"
+          },
+          "amount": {
+            "type": "number"
+          },
+          "term": {
+            "type": "integer",
+            "format": "int32"
           }
         }
       }

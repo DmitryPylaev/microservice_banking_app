@@ -19,6 +19,7 @@
         <module>application</module>
         <module>dossier</module>
         <module>gateway</module>
+        <module>audit</module>
     </modules>
 
     <properties>

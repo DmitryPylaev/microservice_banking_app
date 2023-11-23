@@ -1,18 +1,16 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.*;
-import com.neoflex.java.dto.ApplicationStatus;
-import com.neoflex.java.dto.ChangeType;
-import com.neoflex.java.dto.CreditStatus;
-import com.neoflex.java.dto.EmailMessageTheme;
 import com.neoflex.java.model.*;
 import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.repository.ClientRepository;
 import com.neoflex.java.repository.CreditRepository;
 import com.neoflex.java.service.abstraction.*;
+import com.neoflex.java.service.aspect.AuditAction;
 import com.neoflex.java.service.mapper.CreditMapper;
 import com.neoflex.java.service.mapper.EmploymentMapper;
 import com.neoflex.java.util.CustomLogger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,8 +23,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DealServiceImpl implements DealService {
-    private final BigDecimal denyRate;
+    @Value(value = "${denyRate}")
+    private BigDecimal denyRate;
     private final ApplicationBuildService applicationBuildService;
     private final ConveyorAccessService conveyorAccessService;
     private final ClientRepository clientRepository;
@@ -37,30 +37,9 @@ public class DealServiceImpl implements DealService {
     private final KafkaService kafkaService;
     private final DocumentService documentService;
 
-    public DealServiceImpl(@Value("${denyRate}") Integer denyRate,
-                           ApplicationBuildService applicationBuildService,
-                           ConveyorAccessService conveyorAccessService,
-                           ClientRepository clientRepository,
-                           ApplicationRepository applicationRepository,
-                           CreditRepository creditRepository,
-                           CreditMapper creditMapper,
-                           EmploymentMapper employmentMapper,
-                           KafkaService kafkaService,
-                           DocumentService documentService) {
-        this.denyRate = BigDecimal.valueOf(denyRate);
-        this.applicationBuildService = applicationBuildService;
-        this.conveyorAccessService = conveyorAccessService;
-        this.clientRepository = clientRepository;
-        this.applicationRepository = applicationRepository;
-        this.creditRepository = creditRepository;
-        this.creditMapper = creditMapper;
-        this.employmentMapper = employmentMapper;
-        this.kafkaService = kafkaService;
-        this.documentService = documentService;
-    }
-
     @Override
     @Transactional
+    @AuditAction(service = ServiceEnum.DEAL)
     public List<LoanOfferDTO> acceptRequest(LoanApplicationRequestDTO request) {
         CustomLogger.logInfoClassAndMethod();
         Client client = clientRepository.save(applicationBuildService.createClient(request));
@@ -69,6 +48,7 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
+    @AuditAction(service = ServiceEnum.DEAL)
     public Application updateApplication(LoanOfferDTO request) {
         CustomLogger.logInfoClassAndMethod();
         Long id = request.getApplicationId();
@@ -83,6 +63,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
+    @AuditAction(service = ServiceEnum.DEAL)
     public CreditDTO finishCalculateCredit(FinishRegistrationRequestDTO request, Long applicationId) {
         CustomLogger.logInfoClassAndMethod();
         Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
@@ -104,8 +85,7 @@ public class DealServiceImpl implements DealService {
         if (applicationStatus.equals(ApplicationStatus.PREPARE_DOCUMENTS)) {
             documentService.createDocument(application);
             actualizeApplicationStatus(ApplicationStatus.DOCUMENT_CREATED, application);
-        }
-        else actualizeApplicationStatus(applicationStatus, application);
+        } else actualizeApplicationStatus(applicationStatus, application);
         kafkaService.generateEmail(emailMessageTheme, application);
     }
 

@@ -1,5 +1,6 @@
 package com.neoflex.java.service.kafka_config;
 
+import com.neoflex.java.dto.AuditDTO;
 import com.neoflex.java.dto.EmailMessage;
 import org.apache.kafka.clients.producer.ProducerConfig;
 import org.apache.kafka.common.serialization.StringSerializer;
@@ -22,6 +23,25 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, EmailMessage> emailProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(createConfigProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, EmailMessage> emailKafkaTemplate() {
+        return new KafkaTemplate<>(emailProducerFactory());
+    }
+
+    @Bean
+    public ProducerFactory<String, AuditDTO> auditActionProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(createConfigProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, AuditDTO> auditAsctionKafkaTemplate() {
+        return new KafkaTemplate<>(auditActionProducerFactory());
+    }
+
+    private Map<String, Object> createConfigProps() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -32,11 +52,6 @@ public class KafkaProducerConfig {
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
-    }
-
-    @Bean
-    public KafkaTemplate<String, EmailMessage> emailKafkaTemplate() {
-        return new KafkaTemplate<>(emailProducerFactory());
+        return configProps;
     }
 }
