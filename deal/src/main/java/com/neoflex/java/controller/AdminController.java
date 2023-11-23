@@ -1,5 +1,6 @@
 package com.neoflex.java.controller;
 
+import com.neoflex.java.dto.FindApplicationDTO;
 import com.neoflex.java.model.Application;
 import com.neoflex.java.service.abstraction.AdminService;
 import com.neoflex.java.util.CustomLogger;
@@ -7,10 +8,7 @@ import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.MediaType;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
@@ -38,5 +36,16 @@ public class AdminController {
     public List<Application> getAllApplications() {
         CustomLogger.logInfoClassAndMethod();
         return adminService.findPageApplication();
+    }
+
+    @Operation(summary = "Поиск заявки по статусу, супружескому статусу заемщика, полу заемщика, " +
+            "является ли зарплатным клиентом или имеет страховку," +
+            "более какой-то суммы и срока")
+    @PostMapping(value = "/findByFilter", produces = MediaType.APPLICATION_JSON_VALUE)
+    @ResponseBody
+    public List<Application> findApplicationByFilter(@RequestBody FindApplicationDTO request) {
+        CustomLogger.logInfoClassAndMethod();
+        CustomLogger.logInfoRequest(request);
+        return adminService.findApplicationByFilter(request);
     }
 }
