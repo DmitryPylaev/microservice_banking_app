@@ -1,15 +1,12 @@
 package com.neoflex.java.service;
 
 import com.neoflex.java.dto.*;
-import com.neoflex.java.dto.ApplicationStatus;
-import com.neoflex.java.dto.ChangeType;
-import com.neoflex.java.dto.CreditStatus;
-import com.neoflex.java.dto.EmailMessageTheme;
 import com.neoflex.java.model.*;
 import com.neoflex.java.repository.ApplicationRepository;
 import com.neoflex.java.repository.ClientRepository;
 import com.neoflex.java.repository.CreditRepository;
 import com.neoflex.java.service.abstraction.*;
+import com.neoflex.java.service.aspect.AuditAction;
 import com.neoflex.java.service.mapper.CreditMapper;
 import com.neoflex.java.service.mapper.EmploymentMapper;
 import com.neoflex.java.util.CustomLogger;
@@ -61,6 +58,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
+    @AuditAction(service = ServiceEnum.DEAL)
     public List<LoanOfferDTO> acceptRequest(LoanApplicationRequestDTO request) {
         CustomLogger.logInfoClassAndMethod();
         Client client = clientRepository.save(applicationBuildService.createClient(request));
@@ -69,6 +67,7 @@ public class DealServiceImpl implements DealService {
     }
 
     @Override
+    @AuditAction(service = ServiceEnum.DEAL)
     public Application updateApplication(LoanOfferDTO request) {
         CustomLogger.logInfoClassAndMethod();
         Long id = request.getApplicationId();
@@ -83,6 +82,7 @@ public class DealServiceImpl implements DealService {
 
     @Override
     @Transactional
+    @AuditAction(service = ServiceEnum.DEAL)
     public CreditDTO finishCalculateCredit(FinishRegistrationRequestDTO request, Long applicationId) {
         CustomLogger.logInfoClassAndMethod();
         Optional<Application> optionalApplication = applicationRepository.findById(applicationId);
@@ -104,8 +104,7 @@ public class DealServiceImpl implements DealService {
         if (applicationStatus.equals(ApplicationStatus.PREPARE_DOCUMENTS)) {
             documentService.createDocument(application);
             actualizeApplicationStatus(ApplicationStatus.DOCUMENT_CREATED, application);
-        }
-        else actualizeApplicationStatus(applicationStatus, application);
+        } else actualizeApplicationStatus(applicationStatus, application);
         kafkaService.generateEmail(emailMessageTheme, application);
     }
 

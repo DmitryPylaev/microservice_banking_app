@@ -1101,6 +1101,242 @@ GET: /deal/admin/application/ - получить все заявки
     }
     ]
 
+GET: /deal/admin/findByFilter/ - Поиск заявки по статусу, супружескому статусу заемщика, полу заемщика, является ли
+зарплатным клиентом или имеет страховку, более какой-то суммы и срока
+
+Пример запроса:
+    body json:
+    {
+    "status": "CC_APPROVED",
+    "maritalStatus": "MARRIED",
+    "gender": "MALE",
+    "isInsuranceEnabled": false,
+    "isSalaryClient": false,
+    "amount": 200000,
+    "term": 16
+    }
+    
+Пример ответа:
+    [
+    {
+    "id": 1,
+    "client": {
+    "id": 1,
+    "lastName": "Petrov",
+    "firstName": "Vasiliy",
+    "middleName": "",
+    "birthDate": "1977-08-16",
+    "email": "pilaevdmitrytesting@yandex.ru",
+    "gender": "MALE",
+    "maritalStatus": "MARRIED",
+    "dependentAmount": 1,
+    "passport": {
+    "series": "5766",
+    "number": "576687",
+    "issueBranch": "UFMS",
+    "issueDate": "2023-09-05"
+    },
+    "employment": {
+    "employmentStatus": "EMPLOYED",
+    "employerInn": "1234567890",
+    "salary": 230000,
+    "position": "WORKER",
+    "workExperienceTotal": 12,
+    "workExperienceCurrent": 12
+    },
+    "account": "account"
+    },
+    "credit": {
+    "id": 1,
+    "amount": 300000,
+    "term": 18,
+    "monthlyPayment": 18294.62,
+    "rate": 12,
+    "psk": 6.5118,
+    "paymentSchedule": [
+    {
+    "number": 1,
+    "date": "2023-12-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 3000,
+    "debtPayment": 15294.62,
+    "remainingDebt": 284705.38
+    },
+    {
+    "number": 2,
+    "date": "2024-01-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2847.054,
+    "debtPayment": 15447.57,
+    "remainingDebt": 269257.81
+    },
+    {
+    "number": 3,
+    "date": "2024-02-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2692.578,
+    "debtPayment": 15602.04,
+    "remainingDebt": 253655.77
+    },
+    {
+    "number": 4,
+    "date": "2024-03-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2536.558,
+    "debtPayment": 15758.06,
+    "remainingDebt": 237897.71
+    },
+    {
+    "number": 5,
+    "date": "2024-04-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2378.977,
+    "debtPayment": 15915.64,
+    "remainingDebt": 221982.07
+    },
+    {
+    "number": 6,
+    "date": "2024-05-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2219.821,
+    "debtPayment": 16074.8,
+    "remainingDebt": 205907.27
+    },
+    {
+    "number": 7,
+    "date": "2024-06-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 2059.073,
+    "debtPayment": 16235.55,
+    "remainingDebt": 189671.72
+    },
+    {
+    "number": 8,
+    "date": "2024-07-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1896.717,
+    "debtPayment": 16397.9,
+    "remainingDebt": 173273.82
+    },
+    {
+    "number": 9,
+    "date": "2024-08-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1732.738,
+    "debtPayment": 16561.88,
+    "remainingDebt": 156711.94
+    },
+    {
+    "number": 10,
+    "date": "2024-09-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1567.119,
+    "debtPayment": 16727.5,
+    "remainingDebt": 139984.44
+    },
+    {
+    "number": 11,
+    "date": "2024-10-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1399.844,
+    "debtPayment": 16894.78,
+    "remainingDebt": 123089.66
+    },
+    {
+    "number": 12,
+    "date": "2024-11-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1230.897,
+    "debtPayment": 17063.72,
+    "remainingDebt": 106025.94
+    },
+    {
+    "number": 13,
+    "date": "2024-12-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 1060.259,
+    "debtPayment": 17234.36,
+    "remainingDebt": 88791.58
+    },
+    {
+    "number": 14,
+    "date": "2025-01-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 887.9158,
+    "debtPayment": 17406.7,
+    "remainingDebt": 71384.88
+    },
+    {
+    "number": 15,
+    "date": "2025-02-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 713.8488,
+    "debtPayment": 17580.77,
+    "remainingDebt": 53804.11
+    },
+    {
+    "number": 16,
+    "date": "2025-03-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 538.0411,
+    "debtPayment": 17756.58,
+    "remainingDebt": 36047.53
+    },
+    {
+    "number": 17,
+    "date": "2025-04-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 360.4753,
+    "debtPayment": 17934.14,
+    "remainingDebt": 18113.39
+    },
+    {
+    "number": 18,
+    "date": "2025-05-22",
+    "totalPayment": 18294.62,
+    "interestPayment": 181.1339,
+    "debtPayment": 18113.49,
+    "remainingDebt": -0.1
+    }
+    ],
+    "isInsuranceEnabled": false,
+    "isSalaryClient": false,
+    "creditStatus": "CALCULATED"
+    },
+    "status": "CC_APPROVED",
+    "creationDate": "2023-11-22T12:57:10",
+    "appliedOffer": {
+    "applicationId": 1,
+    "requestedAmount": 300000,
+    "totalAmount": 300000,
+    "term": 18,
+    "monthlyPayment": 18715.44,
+    "rate": 15,
+    "isInsuranceEnabled": false,
+    "isSalaryClient": false
+    },
+    "signDate": null,
+    "sesCode": null,
+    "statusHistory": [
+    {
+    "status": "PREAPPROVAL",
+    "time": "2023-11-22T12:57:10",
+    "changeType": "AUTOMATIC"
+    },
+    {
+    "status": "APPROVED",
+    "time": "2023-11-22T12:57:23",
+    "changeType": "AUTOMATIC"
+    },
+    {
+    "status": "CC_APPROVED",
+    "time": "2023-11-22T12:57:29",
+    "changeType": "AUTOMATIC"
+    }
+    ]
+    }
+    ]
+
 Микросервис application
 POST: /application - первичная валидация заявки, создание заявки
 
@@ -1189,5 +1425,6 @@ POST: /deal/document/{applicationId}/sign - запрос на подписани
 POST: /deal/document/{applicationId}/code - подписание документов
 GET: /deal/admin/application/{applicationId} - получить заявку по id
 PUT: /deal/admin/application/{applicationId}/status - обновить статус заявки
+POST: /deal/admin/application/findByFilter - найти заявку по фильтру (см. выше)
 
 Запросы и ответы аналогичны описанным выше
