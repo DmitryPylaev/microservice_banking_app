@@ -17,6 +17,7 @@ import java.util.UUID;
 @Component
 @AllArgsConstructor
 public class AuditableAspect {
+    private static final String TOPIC_NAME = "AUDIT";
     private KafkaService kafkaService;
 
     @Around("@annotation(auditAction)")
@@ -28,16 +29,16 @@ public class AuditableAspect {
                 .message(sendAuditMessage(joinPoint.getArgs()[0]))
                 .build();
 
-        kafkaService.generateAuditAction("AUDIT", auditDTO);
+        kafkaService.generateAuditAction(TOPIC_NAME, auditDTO);
 
         Object result = new Object();
         try {
             result = joinPoint.proceed();
             auditDTO.setAuditActionType(AuditActionType.SUCCESS);
-            kafkaService.generateAuditAction("AUDIT", auditDTO);
+            kafkaService.generateAuditAction(TOPIC_NAME, auditDTO);
         } catch (Exception e) {
             auditDTO.setAuditActionType(AuditActionType.FAILURE);
-            kafkaService.generateAuditAction("AUDIT", auditDTO);
+            kafkaService.generateAuditAction(TOPIC_NAME, auditDTO);
         }
 
         return result;
