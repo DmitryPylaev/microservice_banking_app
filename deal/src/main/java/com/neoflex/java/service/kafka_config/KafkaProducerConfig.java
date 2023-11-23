@@ -23,17 +23,7 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, EmailMessage> emailProducerFactory() {
-        Map<String, Object> configProps = new HashMap<>();
-        configProps.put(
-                ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
-                bootstrapAddress);
-        configProps.put(
-                ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG,
-                StringSerializer.class);
-        configProps.put(
-                ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
-                JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
+        return new DefaultKafkaProducerFactory<>(createConfigProps());
     }
 
     @Bean
@@ -43,6 +33,15 @@ public class KafkaProducerConfig {
 
     @Bean
     public ProducerFactory<String, AuditDTO> auditActionProducerFactory() {
+        return new DefaultKafkaProducerFactory<>(createConfigProps());
+    }
+
+    @Bean
+    public KafkaTemplate<String, AuditDTO> auditAsctionKafkaTemplate() {
+        return new KafkaTemplate<>(auditActionProducerFactory());
+    }
+
+    private Map<String, Object> createConfigProps() {
         Map<String, Object> configProps = new HashMap<>();
         configProps.put(
                 ProducerConfig.BOOTSTRAP_SERVERS_CONFIG,
@@ -53,11 +52,6 @@ public class KafkaProducerConfig {
         configProps.put(
                 ProducerConfig.VALUE_SERIALIZER_CLASS_CONFIG,
                 JsonSerializer.class);
-        return new DefaultKafkaProducerFactory<>(configProps);
-    }
-
-    @Bean
-    public KafkaTemplate<String, AuditDTO> auditAsctionKafkaTemplate() {
-        return new KafkaTemplate<>(auditActionProducerFactory());
+        return configProps;
     }
 }

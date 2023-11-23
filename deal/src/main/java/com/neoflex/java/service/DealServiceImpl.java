@@ -10,6 +10,7 @@ import com.neoflex.java.service.aspect.AuditAction;
 import com.neoflex.java.service.mapper.CreditMapper;
 import com.neoflex.java.service.mapper.EmploymentMapper;
 import com.neoflex.java.util.CustomLogger;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,8 +23,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class DealServiceImpl implements DealService {
-    private final BigDecimal denyRate;
+    @Value(value = "${denyRate}")
+    private BigDecimal denyRate;
     private final ApplicationBuildService applicationBuildService;
     private final ConveyorAccessService conveyorAccessService;
     private final ClientRepository clientRepository;
@@ -33,28 +36,6 @@ public class DealServiceImpl implements DealService {
     private final EmploymentMapper employmentMapper;
     private final KafkaService kafkaService;
     private final DocumentService documentService;
-
-    public DealServiceImpl(@Value("${denyRate}") Integer denyRate,
-                           ApplicationBuildService applicationBuildService,
-                           ConveyorAccessService conveyorAccessService,
-                           ClientRepository clientRepository,
-                           ApplicationRepository applicationRepository,
-                           CreditRepository creditRepository,
-                           CreditMapper creditMapper,
-                           EmploymentMapper employmentMapper,
-                           KafkaService kafkaService,
-                           DocumentService documentService) {
-        this.denyRate = BigDecimal.valueOf(denyRate);
-        this.applicationBuildService = applicationBuildService;
-        this.conveyorAccessService = conveyorAccessService;
-        this.clientRepository = clientRepository;
-        this.applicationRepository = applicationRepository;
-        this.creditRepository = creditRepository;
-        this.creditMapper = creditMapper;
-        this.employmentMapper = employmentMapper;
-        this.kafkaService = kafkaService;
-        this.documentService = documentService;
-    }
 
     @Override
     @Transactional

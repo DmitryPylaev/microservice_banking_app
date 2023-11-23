@@ -41,8 +41,7 @@ public class AdminController {
     @Operation(summary = "Поиск заявки по статусу, супружескому статусу заемщика, полу заемщика, " +
             "является ли зарплатным клиентом или имеет страховку," +
             "более какой-то суммы и срока")
-    @PostMapping(value = "/findByFilter", produces = MediaType.APPLICATION_JSON_VALUE)
-    @ResponseBody
+    @PostMapping(value = "/findByFilter", consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     public List<Application> findApplicationByFilter(@RequestBody FindApplicationDTO request) {
         CustomLogger.logInfoClassAndMethod();
         CustomLogger.logInfoRequest(request);
